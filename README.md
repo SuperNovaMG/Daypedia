@@ -15,7 +15,7 @@
 <img src="assets/daypedia-device-preview.svg" alt="Daypedia displayed on laptop and mobile phone" width="100%" />
 
 
-![Vanilla JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=for-the-badge&logo=javascript&logoColor=111111) ![Responsive](https://img.shields.io/badge/Design-Mobile--first-22D3EE?style=for-the-badge) ![License](https://img.shields.io/badge/License-Not%20specified-gray?style=for-the-badge)
+![Vanilla JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=for-the-badge&logo=javascript&logoColor=111111) ![Responsive](https://img.shields.io/badge/Design-Mobile--first-22D3EE?style=for-the-badge) ![License](https://img.shields.io/badge/License-Proprietary%20%7C%20All%20Rights%20Reserved-DC2626?style=for-the-badge)
 
 <p align="center"><sub>One calendar. Every screen. Made for curious minds.</sub></p>
 
@@ -137,7 +137,7 @@ Daypedia is a static front-end project. The current interface may load fonts and
 
 ## 📄 License
 
-No license file is currently included. Until a license is added, assume the source is **not licensed for reuse** beyond rights granted by applicable law. If you intend Daypedia to be open source, add a license that matches your goals.
+Daypedia is a proprietary project. **All rights reserved.** No permission is granted to copy, modify, redistribute, or commercially use this project without prior written permission from the copyright holder, except where applicable law allows otherwise. See [LICENSE](LICENSE) for the project notice.
 
 ---
 

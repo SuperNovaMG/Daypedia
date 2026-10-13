@@ -16,7 +16,7 @@ const COPY = {
     countdownCaption:"MIDNIGHT TAK · IST",footer:"Curious minds ke liye. Har din ki apni ek kahani hai.",share:"Share",
     learnMore:"Puri story →",noData:"Is date ke liye data abhi available nahi hai.",noSearch:"Is search mein koi day nahi mila.",
     tomorrow:"Kal",today:"Aaj",popular:"Popular",week:"Is hafte",festival:"Festival",awareness:"Awareness",why:"Kyun manaya jata hai",
-    fact:"Fun fact",dateRequired:"Pehle date choose karo.",shareDone:"Share card download ho gaya.",shareError:"Share karne mein problem hui."
+    fact:"Fun fact",who:"Kisne shuru kiya",dateRequired:"Pehle date choose karo.",shareDone:"Share card download ho gaya.",shareError:"Share karne mein problem hui."
   },
   en: {
     navHome:"Home",navToday:"Today",navSearch:"Search",navCategories:"Categories",navUpcoming:"Upcoming",

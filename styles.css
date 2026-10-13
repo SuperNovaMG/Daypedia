@@ -115,3 +115,10 @@ main{max-width:1600px;margin:0 auto}.hero-layout{display:grid;grid-template-colu
 [data-theme="light"] .instagram-link{color:#7136c9}
 [data-theme="light"] .instagram-link strong{color:#28213f}
 @media(max-width:600px){.instagram-link{font-size:.72rem}}
+
+/* Top-right Instagram shortcut */
+.instagram-icon-btn{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:#e9b8ff;transition:border-color .2s,transform .2s,color .2s,box-shadow .2s}
+.instagram-icon-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7}
+.instagram-icon-btn:hover{color:var(--pink);border-color:var(--pink);transform:translateY(-1px);box-shadow:0 5px 18px #d946ef22}
+[data-theme="light"] .instagram-icon-btn{color:#7535e8;background:#fff}
+@media(max-width:520px){.instagram-icon-btn{width:37px;height:37px;flex-basis:37px;border-radius:12px}.instagram-icon-btn svg{width:18px;height:18px}}

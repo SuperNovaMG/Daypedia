@@ -77,6 +77,7 @@ function dayImage(entry){
   return imgs[cat] || imgs.international;
 }
 function applyLanguage(){
+  document.documentElement.lang=lang==="hi"?"hi":"en";
   document.documentElement.dataset.lang=lang;
   document.querySelectorAll("[data-i18n]").forEach(el=>{const key=el.dataset.i18n;if(t(key)!==key){if(key==="featuredTitle")el.innerHTML=esc(t(key))+' <span>· '+esc(t("today"))+'</span>';else el.textContent=t(key);}});
   const search=$("#searchInput");if(search)search.placeholder=t("searchPlaceholder");

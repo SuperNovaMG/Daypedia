@@ -42,7 +42,7 @@ let activeFilter = "popular";
 let lastRendered = [];
 const t = (key) => COPY[lang][key] || COPY.en[key] || key;
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
-const categoryLabel = (cat) => ({festival:lang==="hi"?"Festival":"Festival",awareness:"Awareness",international:lang==="hi"?"International":"International",national:"National",fun:lang==="hi"?"Fun":"Fun",food:"Food"}[cat] || cat || "Day");
+const categoryLabel = (cat) => ({festival:lang==="hi"?"Tyohar":"Festival",awareness:lang==="hi"?"Jagrukta":"Awareness",international:lang==="hi"?"Duniya bhar ke din":"International",national:lang==="hi"?"Rashtriya din":"National",fun:lang==="hi"?"Mazedaar din":"Fun",food:lang==="hi"?"Food days":"Food"}[cat] || cat || "Day");
 const field = (entry,key) => entry[key+"_"+(lang==="hi"?"hi":"en")] || entry[key+"_en"] || "";
 const monthDayKey = (date) => new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kolkata",month:"2-digit",day:"2-digit"}).format(date).replace("/","-");
 function istDate(offset=0) {
@@ -172,7 +172,7 @@ function showToast(message){const toast=$("#toast");toast.textContent=message;to
 async function shareDay(entry){
  const displayName=entry["name_"+(lang==="hi"?"hi":"en")]||entry.name;
  const title=displayName+" — Daypedia";
- const shareText=displayName+"\\n"+field(entry,"why")+"\\n\\n"+location.href;
+ const shareText=displayName+"\n"+field(entry,"why")+"\n\n"+location.href;
  const canvas=buildShareCanvas(entry);
  try{
   if(navigator.share&&navigator.canShare&&typeof File!=="undefined"){

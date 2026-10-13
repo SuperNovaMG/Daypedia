@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="920" viewBox="0 0 1440 920" fill="none">
+<defs>
+ <linearGradient id="bg" x1="120" y1="0" x2="1320" y2="920" gradientUnits="userSpaceOnUse"><stop stop-color="#090D1C"/><stop offset=".55" stop-color="#171038"/><stop offset="1" stop-color="#080B18"/></linearGradient>
+ <linearGradient id="glow" x1="300" y1="180" x2="1170" y2="760" gradientUnits="userSpaceOnUse"><stop stop-color="#7C3AED"/><stop offset=".55" stop-color="#D946EF"/><stop offset="1" stop-color="#22D3EE"/></linearGradient>
+ <linearGradient id="screen" x1="170" y1="170" x2="1030" y2="680" gradientUnits="userSpaceOnUse"><stop stop-color="#100C2A"/><stop offset="1" stop-color="#080D20"/></linearGradient>
+ <linearGradient id="button" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7C3AED"/><stop offset="1" stop-color="#D946EF"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="26" stdDeviation="25" flood-color="#000" flood-opacity=".45"/></filter>
+ <radialGradient id="ambient"><stop stop-color="#7C3AED" stop-opacity=".28"/><stop offset="1" stop-color="#7C3AED" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1440" height="920" rx="36" fill="url(#bg)"/>
+<circle cx="450" cy="380" r="490" fill="url(#ambient)"/><circle cx="1190" cy="570" r="350" fill="url(#ambient)" opacity=".6"/>
+<g opacity=".2" stroke="#A78BFA"><path d="M0 120H1440M0 200H1440M0 280H1440M0 360H1440M0 440H1440M0 520H1440M0 600H1440M0 680H1440M0 760H1440M0 840H1440"/><path d="M80 0V920M160 0V920M240 0V920M320 0V920M400 0V920M480 0V920M560 0V920M640 0V920M720 0V920M800 0V920M880 0V920M960 0V920M1040 0V920M1120 0V920M1200 0V920M1280 0V920M1360 0V920"/></g>
+<text x="78" y="78" fill="#E9D5FF" font-family="Arial,sans-serif" font-size="19" font-weight="700" letter-spacing="4">DAYPEDIA / PRODUCT PREVIEW</text>
+<text x="78" y="132" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="42" font-weight="800">Every day has a story.</text>
+<text x="80" y="164" fill="#B9B7D6" font-family="Arial,sans-serif" font-size="18">A little discovery, wherever you are.</text>
+<g filter="url(#shadow)">
+<!-- laptop display -->
+<rect x="112" y="205" width="1015" height="572" rx="25" fill="#080A12" stroke="#79739D" stroke-width="3"/>
+<rect x="129" y="222" width="981" height="538" rx="13" fill="url(#screen)"/>
+<path d="M129 235Q129 222 142 222H1097Q1110 222 1110 235V280H129V235Z" fill="#0B0C1E"/>
+<rect x="151" y="239" width="26" height="26" rx="8" fill="#231443" stroke="#C084FC"/><text x="158" y="258" fill="#E9D5FF" font-family="Arial" font-size="16" font-weight="700">▣</text>
+<text x="189" y="259" fill="#F8FAFC" font-family="Arial,sans-serif" font-size="20" font-weight="700">Daypedia</text>
+<g fill="#B6B6D3" font-family="Arial,sans-serif" font-size="14"><text x="350" y="258">Home</text><text x="422" y="258">Today</text><text x="500" y="258">Search</text><text x="586" y="258">Categories</text><text x="695" y="258">Upcoming</text></g>
+<rect x="966" y="236" width="56" height="30" rx="10" fill="#171832" stroke="#3D3867"/><text x="982" y="256" fill="#F5F3FF" font-family="Arial" font-size="12" font-weight="700">HI ⌄</text>
+<text x="156" y="326" fill="#D8B4FE" font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="2">EXPLORE · DISCOVER · CELEBRATE</text>
+<text x="151" y="401" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="65" font-weight="800" letter-spacing="-3">Every day</text>
+<text x="151" y="469" fill="url(#glow)" font-family="Arial,sans-serif" font-size="65" font-weight="800" letter-spacing="-3">has a story.</text>
+<text x="155" y="509" fill="#F8FAFC" font-family="Arial,sans-serif" font-size="21" font-weight="700">Roz ek naya din, roz ek nayi kahani.</text>
+<text x="155" y="541" fill="#A7B0D4" font-family="Arial,sans-serif" font-size="15">Discover festivals, awareness days, historic moments</text><text x="155" y="564" fill="#A7B0D4" font-family="Arial,sans-serif" font-size="15">and little-known reasons to celebrate the world around you.</text>
+<rect x="151" y="594" width="534" height="58" rx="16" fill="#0C1025" stroke="#9B5CF6" stroke-width="1.5"/><text x="175" y="629" fill="#8E91B4" font-family="Arial,sans-serif" font-size="15">⌕  Search a day, festival or topic...</text><rect x="559" y="602" width="117" height="42" rx="12" fill="url(#button)"/><text x="581" y="629" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="14" font-weight="700">Search →</text>
+<g font-family="Arial,sans-serif" font-size="12" font-weight="700"><rect x="151" y="669" width="76" height="31" rx="15" fill="#26204A" stroke="#7650C6"/><text x="170" y="689" fill="#F3E8FF">Popular</text><rect x="236" y="669" width="72" height="31" rx="15" fill="#171B35" stroke="#39365F"/><text x="256" y="689" fill="#D6D5F0">Today</text><rect x="317" y="669" width="101" height="31" rx="15" fill="url(#button)"/><text x="335" y="689" fill="#FFFFFF">Tomorrow</text><rect x="427" y="669" width="91" height="31" rx="15" fill="#171B35" stroke="#39365F"/><text x="444" y="689" fill="#D6D5F0">Festivals</text></g>
+<!-- date card -->
+<rect x="734" y="308" width="345" height="178" rx="19" fill="#111630" stroke="#393B77"/>
+<rect x="756" y="329" width="34" height="34" rx="10" fill="#29225B"/><text x="765" y="351" fill="#C4B5FD" font-family="Arial" font-size="18">▦</text><text x="802" y="350" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="15" font-weight="700">Today's date</text>
+<text x="757" y="391" fill="#A5B4FC" font-family="Arial,sans-serif" font-size="14">Tuesday</text><text x="757" y="424" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="27" font-weight="800">October 13, 2026</text><text x="757" y="451" fill="#B5BCE0" font-family="Arial,sans-serif" font-size="13">286th day of the year</text><text x="757" y="471" fill="#B5BCE0" font-family="Arial,sans-serif" font-size="13">79 days left</text>
+<!-- highlights -->
+<rect x="734" y="503" width="345" height="222" rx="19" fill="#111630" stroke="#393B77"/><rect x="756" y="522" width="34" height="34" rx="10" fill="#0D344D"/><text x="765" y="545" fill="#67E8F9" font-family="Arial" font-size="18">◷</text><text x="802" y="544" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="15" font-weight="700">Upcoming highlights</text>
+<g font-family="Arial,sans-serif" font-size="12"><circle cx="775" cy="581" r="13" fill="#252D70"/><text x="767" y="585" fill="#FFFFFF" font-size="12">🌍</text><text x="799" y="585" fill="#E5E7FF">Disaster Risk Reduction Day</text><text x="1030" y="585" fill="#A5B4FC" text-anchor="end">Today</text><path d="M756 603H1056" stroke="#282D4B"/><circle cx="775" cy="627" r="13" fill="#252D70"/><text x="767" y="631" fill="#FFFFFF" font-size="12">✴</text><text x="799" y="631" fill="#E5E7FF">International Day for Failure</text><text x="1030" y="631" fill="#A5B4FC" text-anchor="end">Today</text><path d="M756 649H1056" stroke="#282D4B"/><circle cx="775" cy="673" r="13" fill="#252D70"/><text x="767" y="677" fill="#FFFFFF" font-size="12">🔎</text><text x="799" y="677" fill="#E5E7FF">International Skeptics Day</text><text x="1030" y="677" fill="#A5B4FC" text-anchor="end">Today</text></g>
+<!-- laptop base -->
+<path d="M85 780Q88 774 100 774H1139Q1152 774 1157 782L1192 815Q1197 824 1181 826H62Q46 824 53 814L85 780Z" fill="#77758C" stroke="#B3B0CA" stroke-width="2"/><path d="M500 783H741L721 799H520Z" fill="#49475E"/>
+<!-- phone -->
+<g transform="translate(1050 385) rotate(7 145 250)">
+<rect x="0" y="0" width="270" height="500" rx="39" fill="#070811" stroke="#B7A9DE" stroke-width="3"/>
+<rect x="10" y="10" width="250" height="480" rx="31" fill="#0A0D20" stroke="#30294E"/>
+<rect x="85" y="15" width="100" height="18" rx="9" fill="#070811"/>
+<rect x="25" y="51" width="27" height="27" rx="8" fill="#251344" stroke="#C084FC"/><text x="32" y="70" fill="#E9D5FF" font-family="Arial" font-size="15">▣</text><text x="61" y="70" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="17" font-weight="700">Daypedia</text><circle cx="231" cy="65" r="15" fill="#191833" stroke="#3F3767"/><text x="225" y="70" fill="#DDD6FE" font-family="Arial" font-size="14">☾</text>
+<text x="27" y="121" fill="#D8B4FE" font-family="Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1">YOUR DAILY DISCOVERY</text><text x="25" y="164" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="34" font-weight="800">Every day</text><text x="25" y="201" fill="url(#glow)" font-family="Arial,sans-serif" font-size="34" font-weight="800">has a story.</text><text x="27" y="225" fill="#C4C8E5" font-family="Arial,sans-serif" font-size="11">A new day, a new story.</text>
+<rect x="24" y="248" width="222" height="42" rx="13" fill="#11142C" stroke="#8956DA"/><text x="39" y="273" fill="#999FC3" font-family="Arial,sans-serif" font-size="11">⌕ Search a day...</text>
+<rect x="24" y="309" width="222" height="118" rx="16" fill="#111630" stroke="#38396C"/><rect x="38" y="323" width="25" height="25" rx="8" fill="#29225B"/><text x="45" y="340" fill="#C4B5FD" font-family="Arial" font-size="14">▦</text><text x="71" y="340" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="11" font-weight="700">Today's date</text><text x="39" y="369" fill="#A5B4FC" font-family="Arial,sans-serif" font-size="10">Tuesday</text><text x="39" y="392" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="18" font-weight="800">October 13</text><text x="39" y="410" fill="#B5BCE0" font-family="Arial,sans-serif" font-size="10">2026 · 79 days left</text>
+<rect x="24" y="440" width="222" height="34" rx="11" fill="url(#button)"/><text x="79" y="461" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="12" font-weight="700">Explore today's days ↗</text>
+</g>
+</g>
+<text x="80" y="879" fill="#B9B7D6" font-family="Arial,sans-serif" font-size="15">Discover something worth sharing.</text>
+<rect x="1168" y="850" width="190" height="38" rx="19" fill="#191332" stroke="#6D3AA7"/><text x="1263" y="874" fill="#E9D5FF" font-family="Arial,sans-serif" font-size="13" font-weight="700" text-anchor="middle">DESKTOP + MOBILE</text>
+</svg>

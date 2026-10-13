@@ -85,7 +85,13 @@ function applyLanguage(){
   $("#themeToggle").textContent=theme==="dark"?"☾":"☀";
   document.title=lang==="hi"?"Daypedia — Har din ek nayi kahani":"Daypedia — Every Day Has a Story";
 }
-function applyTheme(){document.documentElement.dataset.theme=theme;$("#themeToggle").textContent=theme==="dark"?"☾":"☀";}
+function applyTheme(){
+  document.documentElement.dataset.theme=theme;
+  document.body.dataset.theme=theme;
+  const button=$("#themeToggle");
+  if(button){button.textContent=theme==="dark"?"☾":"☀";button.setAttribute("aria-label",theme==="dark"?"Switch to light theme":"Switch to dark theme");button.title=theme==="dark"?"Switch to light theme":"Switch to dark theme";button.setAttribute("aria-pressed",String(theme==="light"));}
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content",theme==="dark"?"#07091b":"#f6f5ff");
+}
 function daySlug(name){return String(name||"special-day").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"special-day";}
 function dayPageUrl(entry){return "/day/"+daySlug(entry.name)+"/";}
 function cardHTML(entry){
@@ -138,14 +144,20 @@ function renderResults(list,container=$("#searchResults")){
  container.innerHTML=list.length?list.slice(0,12).map(cardHTML).join(""):'<p class="empty">'+esc(t("noSearch"))+'</p>';
  bindDayCards(container);
 }
-function runSearch(){
- const q=$("#searchInput").value.trim().toLocaleLowerCase();
- if(!q){showToast(t("noSearch"));return;}
- const found=DAYS.filter(e=>[e.name,e.cat,field(e,"why"),field(e,"who"),field(e,"fact")].join(" ").toLocaleLowerCase().includes(q));
- $("#searchResults").innerHTML="";
+function runSearch({scroll=true}={}){
+ const input=$("#searchInput");
+ const q=(input?.value||"").trim().toLocaleLowerCase();
+ const results=$("#searchResults");
+ if(!results)return;
+ if(!q){results.innerHTML="";return;}
+ const normalize=value=>String(value??"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLocaleLowerCase();
+ const found=DAYS.filter(entry=>{
+   const searchable=[entry.name,entry.name_en,entry.name_hi,entry.cat,categoryLabel(entry.cat),entry.why_en,entry.why_hi,entry.who_en,entry.who_hi,entry.fact_en,entry.fact_hi].filter(Boolean).join(" ");
+   return normalize(searchable).includes(normalize(q));
+ });
  $("#dateInput").value="";
  renderResults(found);
- $("#searchResults").scrollIntoView({behavior:"smooth",block:"nearest"});
+ if(scroll)results.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 let calendarMonthDate = new Date();
 function renderCalendar(){
@@ -247,8 +259,9 @@ async function loadDays(){
 }
 function bindEvents(){
  $("#langToggle").addEventListener("click",()=>{lang=lang==="hi"?"en":"hi";applyLanguage();renderAll();});
- $("#themeToggle").addEventListener("click",()=>{theme=theme==="dark"?"light":"dark";applyTheme();});
+ $("#themeToggle").addEventListener("click",()=>{theme=document.documentElement.dataset.theme==="dark"?"light":"dark";applyTheme();});
  $("#searchForm").addEventListener("submit",event=>{event.preventDefault();runSearch();});
+ $("#searchInput").addEventListener("input",()=>{if($("#searchInput").value.trim())runSearch({scroll:false});else $("#searchResults").innerHTML="";});
  $("#dateGo").addEventListener("click",runDateSearch);
   $("#calendarPrev").addEventListener("click",()=>{calendarMonthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()-1,1);renderCalendar();});
   $("#calendarNext").addEventListener("click",()=>{calendarMonthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()+1,1);renderCalendar();});

@@ -35,8 +35,8 @@ const COPY = {
     dateRequired:"Please choose a date first.",shareDone:"Share card downloaded.",shareError:"Could not share this day."
   }
 };
-let lang = localStorage.getItem("aksd-lang") || "hi";
-let theme = localStorage.getItem("aksd-theme") || "dark";
+let lang = "en";
+let theme = "dark";
 let DAYS = [];
 let activeFilter = "popular";
 let lastRendered = [];
@@ -84,7 +84,7 @@ function applyLanguage(){
   $("#themeToggle").textContent=theme==="dark"?"☾":"☀";
   document.title=lang==="hi"?"Daypedia — Har din ek nayi kahani":"Daypedia — Every Day Has a Story";
 }
-function applyTheme(){document.documentElement.dataset.theme=theme;$("#themeToggle").textContent=theme==="dark"?"☾":"☀";localStorage.setItem("aksd-theme",theme);}
+function applyTheme(){document.documentElement.dataset.theme=theme;$("#themeToggle").textContent=theme==="dark"?"☾":"☀";}
 function cardHTML(entry){
  const date=nextOccurrence(entry);
  const key=entry.d;
@@ -170,20 +170,21 @@ function applyQuickFilter(filter){
 }
 function showToast(message){const toast=$("#toast");toast.textContent=message;toast.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.classList.remove("show"),2400);}
 async function shareDay(entry){
- const title=entry.name+" — Daypedia";
- const shareText=field(entry,"why")+"\n\n"+location.href;
+ const displayName=entry["name_"+(lang==="hi"?"hi":"en")]||entry.name;
+ const title=displayName+" — Daypedia";
+ const shareText=displayName+"\\n"+field(entry,"why")+"\\n\\n"+location.href;
  const canvas=buildShareCanvas(entry);
  try{
   if(navigator.share&&navigator.canShare&&typeof File!=="undefined"){
    const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/png"));
    if(blob){
-    const file=new File([blob],"daypedia-"+entry.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png",{type:"image/png"});
+    const file=new File([blob],"daypedia-"+displayName.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png",{type:"image/png"});
     if(navigator.canShare({files:[file]})){await navigator.share({title,text:shareText,files:[file]});showToast(t("shareDone"));return;}
    }
   }
  }catch(error){if(error&&error.name==="AbortError")return;}
  downloadShareCard(entry);
- if(navigator.clipboard?.writeText){navigator.clipboard.writeText(location.href).then(()=>showToast("Share image saved · link copied!")).catch(()=>{});}
+ if(navigator.clipboard?.writeText){navigator.clipboard.writeText(shareText).then(()=>showToast(lang==="hi"?"Share card save ho gaya, details copy ho gayi!":"Share card saved and details copied!")).catch(()=>{});}
 }
 function buildShareCanvas(entry){
  const canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1350;
@@ -193,13 +194,13 @@ function buildShareCanvas(entry){
  ctx.save();ctx.globalAlpha=.85;ctx.strokeStyle="#9333ea";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(40,190);ctx.bezierCurveTo(170,175,120,65,250,40);ctx.stroke();ctx.strokeStyle="#22d3ee";ctx.beginPath();ctx.moveTo(890,1280);ctx.bezierCurveTo(970,1210,1010,1300,1040,1170);ctx.stroke();ctx.restore();
  const border=ctx.createLinearGradient(50,40,1030,1310);border.addColorStop(0,"#a855f7");border.addColorStop(.55,"#ec4899");border.addColorStop(1,"#22d3ee");ctx.strokeStyle=border;ctx.lineWidth=4;roundRect(ctx,36,36,1008,1278,32);ctx.stroke();
  ctx.textAlign="center";ctx.fillStyle="#e9d5ff";ctx.font="700 48px system-ui, sans-serif";ctx.fillText("✦ Daypedia",540,120);
- ctx.fillStyle="rgba(167,139,250,.18)";roundRect(ctx,385,158,310,46,23);ctx.fill();ctx.fillStyle="#d8b4fe";ctx.font="700 22px system-ui, sans-serif";ctx.fillText("TODAY'S DISCOVERY",540,188);
+ ctx.fillStyle="rgba(167,139,250,.18)";roundRect(ctx,385,158,310,46,23);ctx.fill();ctx.fillStyle="#d8b4fe";ctx.font="700 22px system-ui, sans-serif";ctx.fillText(lang==="hi"?"AAJ KI KHOJ":"TODAY'S DISCOVERY",540,188);
  ctx.shadowColor="#d946ef";ctx.shadowBlur=34;ctx.font="150px system-ui, sans-serif";ctx.fillStyle="#fff";ctx.fillText(entry.emoji||"✦",540,370);ctx.shadowBlur=0;
- ctx.fillStyle="#fff";const titleSize=entry.name.length>28?52:entry.name.length>19?64:76;ctx.font="900 "+titleSize+"px system-ui, sans-serif";const titleLines=wrapCanvas(ctx,entry.name,540,485,900,titleSize*1.12);let y=485+titleLines*titleSize*1.12+18;
+ ctx.fillStyle="#fff";const displayName=entry["name_"+(lang==="hi"?"hi":"en")]||entry.name;const titleSize=displayName.length>28?52:displayName.length>19?64:76;ctx.font="900 "+titleSize+"px system-ui, sans-serif";const titleLines=wrapCanvas(ctx,displayName,540,485,900,titleSize*1.12);let y=485+titleLines*titleSize*1.12+18;
  const cat=categoryLabel(entry.cat).toUpperCase();ctx.font="800 28px system-ui, sans-serif";const pillW=Math.min(430,Math.max(170,ctx.measureText(cat).width+94));const pillGrad=ctx.createLinearGradient(540-pillW/2,y,540+pillW/2,y+70);pillGrad.addColorStop(0,"#8b5cf6");pillGrad.addColorStop(1,"#ec4899");ctx.fillStyle=pillGrad;roundRect(ctx,540-pillW/2,y,pillW,64,32);ctx.fill();ctx.fillStyle="#fff";ctx.fillText(cat,540,y+41);y+=92;
  const desc=field(entry,"why");const panelH=Math.min(235,Math.max(145,Math.ceil(String(desc).length/43)*47+54));ctx.fillStyle="rgba(20,22,52,.92)";roundRect(ctx,100,y,880,panelH,28);ctx.fill();ctx.strokeStyle="rgba(139,92,246,.55)";ctx.lineWidth=2;ctx.stroke();ctx.fillStyle="#f1efff";ctx.font="34px system-ui, sans-serif";wrapCanvas(ctx,desc,540,y+55,800,48);y+=panelH+34;
  const dateText=niceDate(istDate()),dateY=Math.min(y,1075);const dateGrad=ctx.createLinearGradient(240,dateY,840,dateY+84);dateGrad.addColorStop(0,"#0e2340");dateGrad.addColorStop(1,"#171039");ctx.fillStyle=dateGrad;roundRect(ctx,225,dateY,630,82,41);ctx.fill();ctx.strokeStyle="#22d3ee";ctx.lineWidth=3;ctx.stroke();ctx.fillStyle="#67e8f9";ctx.font="700 34px system-ui, sans-serif";ctx.fillText(dateText,540,dateY+52);
- ctx.fillStyle="#d8b4fe";ctx.font="700 30px system-ui, sans-serif";ctx.fillText("Every day has a story.",540,1225);ctx.fillStyle="#a5b4fc";ctx.font="22px system-ui, sans-serif";ctx.fillText("daypedia.vercel.app",540,1268);return canvas;
+ ctx.fillStyle="#d8b4fe";ctx.font="700 30px system-ui, sans-serif";ctx.fillText(lang==="hi"?"Har din ek kahani hai.":"Every day has a story.",540,1225);ctx.fillStyle="#a5b4fc";ctx.font="22px system-ui, sans-serif";ctx.fillText("daypedia.vercel.app",540,1268);ctx.font="700 22px system-ui, sans-serif";ctx.fillText("@days_pedia",540,1298);return canvas;
 }
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);}
 function wrapCanvas(ctx,text,x,y,maxWidth,lineHeight){let line="",yy=y,lines=0;for(const word of String(text).split(/\s+/)){const test=line+word+" ";if(ctx.measureText(test).width>maxWidth&&line){ctx.fillText(line.trim(),x,yy);line=word+" ";yy+=lineHeight;lines++;}else line=test;}if(line.trim()){ctx.fillText(line.trim(),x,yy);lines++;}return lines;}
@@ -218,7 +219,7 @@ async function loadDays(){
  throw new Error("Day data could not be loaded");
 }
 function bindEvents(){
- $("#langToggle").addEventListener("click",()=>{lang=lang==="hi"?"en":"hi";localStorage.setItem("aksd-lang",lang);applyLanguage();renderAll();});
+ $("#langToggle").addEventListener("click",()=>{lang=lang==="hi"?"en":"hi";applyLanguage();renderAll();});
  $("#themeToggle").addEventListener("click",()=>{theme=theme==="dark"?"light":"dark";applyTheme();});
  $("#searchForm").addEventListener("submit",event=>{event.preventDefault();runSearch();});
  $("#dateGo").addEventListener("click",runDateSearch);

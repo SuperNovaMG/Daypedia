@@ -148,16 +148,28 @@ function renderResults(list,container=$("#searchResults")){
  container.innerHTML=list.length?list.slice(0,12).map(cardHTML).join(""):'<p class="empty">'+esc(t("noSearch"))+'</p>';
  bindDayCards(container);
 }
+function normalizeSearch(value){
+ return String(value??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu," ").trim();
+}
 function runSearch({scroll=true}={}){
  const input=$("#searchInput");
- const q=(input?.value||"").trim().toLocaleLowerCase();
+ const query=normalizeSearch(input?.value||"");
  const results=$("#searchResults");
  if(!results)return;
- if(!q){results.innerHTML="";return;}
- const normalize=value=>String(value??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase();
+ if(!query){results.innerHTML="";return;}
+ const terms=query.split(/\s+/).filter(Boolean);
+ const categoryAliases={
+  festival:["festival","festivals","celebration","celebrations","tyohar"],
+  awareness:["awareness","jagrukta","health","cause"],
+  international:["international","world","global","historic","history"],
+  national:["national","india","indian","rashtriya"],
+  fun:["fun","quirky","funny","mazedaar"],
+  food:["food","eat","cuisine"]
+ };
  const found=DAYS.filter(entry=>{
-   const searchable=[entry.name,entry.name_en,entry.name_hi,entry.cat,categoryLabel(entry.cat),entry.why_en,entry.why_hi,entry.who_en,entry.who_hi,entry.fact_en,entry.fact_hi].filter(Boolean).join(" ");
-   return normalize(searchable).includes(normalize(q));
+  const categoryText=[entry.cat,categoryLabel(entry.cat),...(categoryAliases[entry.cat]||[])].join(" ");
+  const searchable=normalizeSearch([entry.name,entry.name_en,entry.name_hi,categoryText,entry.why_en,entry.why_hi,entry.who_en,entry.who_hi,entry.fact_en,entry.fact_hi].filter(Boolean).join(" "));
+  return terms.every(term=>searchable.includes(term));
  });
  $("#dateInput").value="";
  renderResults(found);
@@ -206,12 +218,14 @@ function runDateSearch(){
 }
 function applyQuickFilter(filter){
  activeFilter=filter;
- $$(".quick-filter").forEach(btn=>btn.classList.toggle("active",btn.dataset.filter===filter));
- if(filter==="today"){renderResults(daysFor(todayKey()));}
- else if(filter==="tomorrow"){renderResults(daysFor(todayKey(1)));}
- else if(filter==="festival"||filter==="awareness"){const found=daysFor(todayKey()).filter(x=>x.cat===filter);renderResults(found.length?found:DAYS.filter(x=>x.cat===filter).slice(0,9));renderToday();}
+ $(".quick-filter").forEach(btn=>btn.classList.toggle("active",btn.dataset.filter===filter));
+ $("#searchInput").value="";
+ $("#dateInput").value="";
+ if(filter==="today")renderResults(daysFor(todayKey()));
+ else if(filter==="tomorrow")renderResults(daysFor(todayKey(1)));
+ else if(filter==="festival"||filter==="awareness")renderResults(DAYS.filter(x=>x.cat===filter));
  else if(filter==="week"){const keys=new Set(Array.from({length:7},(_,i)=>todayKey(i)));renderResults(DAYS.filter(x=>keys.has(x.d)));}
- else{renderResults(DAYS.slice(0,9));renderToday();}
+ else{renderResults(DAYS.slice(0,9));}
 }
 function showToast(message){const toast=$("#toast");toast.textContent=message;toast.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.classList.remove("show"),2400);}
 async function shareDay(entry){
@@ -257,11 +271,44 @@ function tickCountdown(){
  const start=new Date(Date.UTC(today.getUTCFullYear(),0,1,6));const day=Math.floor((today-start)/86400000)+1;const leap=new Date(today.getUTCFullYear(),1,29).getMonth()===1;const total=leap?366:365;
  $("#yearDay").textContent=day+"th day of the year";$("#daysLeft").textContent=(total-day)+" days left";
 }
-async function loadDays(){
- for(const url of ["days.json","https://raw.githubusercontent.com/SuperNovaMG/Daypedia/main/days.json"]){
-  try{const response=await fetch(url,{cache:"no-cache"});if(response.ok){const data=await response.json();if(Array.isArray(data))return data;}}catch(error){}
+function validateDayData(input){
+ if(!Array.isArray(input))throw new Error("Day data must be a JSON array");
+ const allowedCategories=new Set(["festival","awareness","international","national","fun","food"]);
+ const seenNames=new Set();
+ const valid=[];
+ const issues=[];
+ for(const [index,raw] of input.entries()){
+  if(!raw||typeof raw!=="object"||Array.isArray(raw)){issues.push("row "+(index+1)+": not an object");continue;}
+  const name=String(raw.name||"").trim();
+  const date=String(raw.d||"");
+  const category=String(raw.cat||"").trim().toLowerCase();
+  const match=date.match(/^(\d{2})-(\d{2})$/);
+  if(!name){issues.push("row "+(index+1)+": missing name");continue;}
+  if(!match){issues.push(name+": invalid date format");continue;}
+  const month=Number(match[1]),day=Number(match[2]);
+  const dateCheck=new Date(Date.UTC(2000,month-1,day));
+  if(month<1||month>12||dateCheck.getUTCMonth()!==month-1||dateCheck.getUTCDate()!==day){issues.push(name+": invalid calendar date");continue;}
+  if(!allowedCategories.has(category)){issues.push(name+": unsupported category");continue;}
+  const nameKey=normalizeSearch(name);
+  if(seenNames.has(nameKey)){issues.push(name+": duplicate name");continue;}
+  seenNames.add(nameKey);
+  valid.push({...raw,d:date,name,cat:category});
  }
- throw new Error("Day data could not be loaded");
+ if(issues.length)console.warn("Daypedia data validation:",issues);
+ if(!valid.length)throw new Error("No valid day entries were found");
+ return valid;
+}
+async function loadDays(){
+ let lastError;
+ for(const url of ["days.json","https://raw.githubusercontent.com/SuperNovaMG/Daypedia/main/days.json"]){
+  try{
+   const response=await fetch(url,{cache:"no-cache"});
+   if(!response.ok)throw new Error("HTTP "+response.status+" for "+url);
+   const data=await response.json();
+   return validateDayData(data);
+  }catch(error){lastError=error;console.warn("Could not load Daypedia data from "+url,error);}
+ }
+ throw lastError||new Error("Day data could not be loaded");
 }
 function bindEvents(){
  $("#langToggle").addEventListener("click",()=>{lang=lang==="hi"?"en":"hi";applyLanguage();renderAll();});

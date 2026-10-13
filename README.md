@@ -11,6 +11,10 @@
 <br />
 
 ![Daypedia](https://img.shields.io/badge/Daypedia-Every%20day%20has%20a%20story-8B5CF6?style=for-the-badge&labelColor=090D14)
+
+<img src="assets/daypedia-device-preview.svg" alt="Daypedia displayed on laptop and mobile phone" width="100%" />
+
+<p align="center"><sub>One calendar. Every screen. Made for curious minds.</sub></p>
 ![Vanilla JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=for-the-badge&logo=javascript&logoColor=111111)
 ![Responsive](https://img.shields.io/badge/Design-Mobile--first-22D3EE?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Not%20specified-gray?style=for-the-badge)

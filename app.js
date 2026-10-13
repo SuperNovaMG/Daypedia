@@ -187,19 +187,22 @@ async function shareDay(entry){
 }
 function buildShareCanvas(entry){
  const canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1350;
- const c=canvas.getContext("2d");const g=c.createLinearGradient(0,0,1080,1350);g.addColorStop(0,"#171039");g.addColorStop(1,"#050817");c.fillStyle=g;c.fillRect(0,0,1080,1350);
- c.strokeStyle="#8d5cff";c.lineWidth=3;c.strokeRect(38,38,1004,1274);c.textAlign="center";c.fillStyle="#d6b3ff";c.font="700 48px sans-serif";c.fillText("✦ Daypedia",540,145);
- c.font="150px sans-serif";c.fillText(entry.emoji||"✦",540,390);c.fillStyle="#fff";c.font="800 62px sans-serif";wrapCanvas(c,entry.name,540,510,850,78);
- c.fillStyle="#da9bff";c.font="700 30px sans-serif";c.fillText(categoryLabel(entry.cat).toUpperCase(),540,730);
- c.fillStyle="#c5c9e7";c.font="34px sans-serif";wrapCanvas(c,field(entry,"why"),540,810,830,52);
- c.fillStyle="#6ee7ff";c.font="700 30px sans-serif";c.fillText(niceDate(istDate()),540,1170);c.fillStyle="#d6b3ff";c.font="700 28px sans-serif";c.fillText("Every day has a story.",540,1230);
- return canvas;
+ const ctx=canvas.getContext("2d");
+ const bg=ctx.createLinearGradient(0,0,1080,1350);bg.addColorStop(0,"#100b2c");bg.addColorStop(.48,"#090b20");bg.addColorStop(1,"#06091a");ctx.fillStyle=bg;ctx.fillRect(0,0,1080,1350);
+ const glow=ctx.createRadialGradient(540,350,10,540,350,620);glow.addColorStop(0,(entry.cat==="food"||entry.cat==="Food")?"rgba(255,45,153,.28)":"rgba(139,92,246,.35)");glow.addColorStop(1,"rgba(10,8,30,0)");ctx.fillStyle=glow;ctx.fillRect(0,0,1080,900);
+ ctx.save();ctx.globalAlpha=.85;ctx.strokeStyle="#9333ea";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(40,190);ctx.bezierCurveTo(170,175,120,65,250,40);ctx.stroke();ctx.strokeStyle="#22d3ee";ctx.beginPath();ctx.moveTo(890,1280);ctx.bezierCurveTo(970,1210,1010,1300,1040,1170);ctx.stroke();ctx.restore();
+ const border=ctx.createLinearGradient(50,40,1030,1310);border.addColorStop(0,"#a855f7");border.addColorStop(.55,"#ec4899");border.addColorStop(1,"#22d3ee");ctx.strokeStyle=border;ctx.lineWidth=4;roundRect(ctx,36,36,1008,1278,32);ctx.stroke();
+ ctx.textAlign="center";ctx.fillStyle="#e9d5ff";ctx.font="700 48px system-ui, sans-serif";ctx.fillText("✦ Daypedia",540,120);
+ ctx.fillStyle="rgba(167,139,250,.18)";roundRect(ctx,385,158,310,46,23);ctx.fill();ctx.fillStyle="#d8b4fe";ctx.font="700 22px system-ui, sans-serif";ctx.fillText("TODAY'S DISCOVERY",540,188);
+ ctx.shadowColor="#d946ef";ctx.shadowBlur=34;ctx.font="150px system-ui, sans-serif";ctx.fillStyle="#fff";ctx.fillText(entry.emoji||"✦",540,370);ctx.shadowBlur=0;
+ ctx.fillStyle="#fff";const titleSize=entry.name.length>28?52:entry.name.length>19?64:76;ctx.font="900 "+titleSize+"px system-ui, sans-serif";const titleLines=wrapCanvas(ctx,entry.name,540,485,900,titleSize*1.12);let y=485+titleLines*titleSize*1.12+18;
+ const cat=categoryLabel(entry.cat).toUpperCase();ctx.font="800 28px system-ui, sans-serif";const pillW=Math.min(430,Math.max(170,ctx.measureText(cat).width+94));const pillGrad=ctx.createLinearGradient(540-pillW/2,y,540+pillW/2,y+70);pillGrad.addColorStop(0,"#8b5cf6");pillGrad.addColorStop(1,"#ec4899");ctx.fillStyle=pillGrad;roundRect(ctx,540-pillW/2,y,pillW,64,32);ctx.fill();ctx.fillStyle="#fff";ctx.fillText(cat,540,y+41);y+=92;
+ const desc=field(entry,"why");const panelH=Math.min(235,Math.max(145,Math.ceil(String(desc).length/43)*47+54));ctx.fillStyle="rgba(20,22,52,.92)";roundRect(ctx,100,y,880,panelH,28);ctx.fill();ctx.strokeStyle="rgba(139,92,246,.55)";ctx.lineWidth=2;ctx.stroke();ctx.fillStyle="#f1efff";ctx.font="34px system-ui, sans-serif";wrapCanvas(ctx,desc,540,y+55,800,48);y+=panelH+34;
+ const dateText=niceDate(istDate()),dateY=Math.min(y,1075);const dateGrad=ctx.createLinearGradient(240,dateY,840,dateY+84);dateGrad.addColorStop(0,"#0e2340");dateGrad.addColorStop(1,"#171039");ctx.fillStyle=dateGrad;roundRect(ctx,225,dateY,630,82,41);ctx.fill();ctx.strokeStyle="#22d3ee";ctx.lineWidth=3;ctx.stroke();ctx.fillStyle="#67e8f9";ctx.font="700 34px system-ui, sans-serif";ctx.fillText(dateText,540,dateY+52);
+ ctx.fillStyle="#d8b4fe";ctx.font="700 30px system-ui, sans-serif";ctx.fillText("Every day has a story.",540,1225);ctx.fillStyle="#a5b4fc";ctx.font="22px system-ui, sans-serif";ctx.fillText("daypedia.vercel.app",540,1268);return canvas;
 }
-function downloadShareCard(entry){
- const canvas=buildShareCanvas(entry);
- const a=document.createElement("a");a.download="daypedia-"+entry.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png";a.href=canvas.toDataURL("image/png");a.click();showToast(t("shareDone"));
-}
-function wrapCanvas(ctx,text,x,y,maxWidth,lineHeight){let line="",yy=y;for(const word of String(text).split(/\s+/)){const test=line+word+" ";if(ctx.measureText(test).width>maxWidth&&line){ctx.fillText(line,x,yy);line=word+" ";yy+=lineHeight;}else line=test;}ctx.fillText(line,x,yy);}
+function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);}
+function wrapCanvas(ctx,text,x,y,maxWidth,lineHeight){let line="",yy=y,lines=0;for(const word of String(text).split(/\s+/)){const test=line+word+" ";if(ctx.measureText(test).width>maxWidth&&line){ctx.fillText(line.trim(),x,yy);line=word+" ";yy+=lineHeight;lines++;}else line=test;}if(line.trim()){ctx.fillText(line.trim(),x,yy);lines++;}return lines;}
 function tickCountdown(){
  const now=new Date();const ist=new Date(now.toLocaleString("en-US",{timeZone:"Asia/Kolkata"}));const midnight=new Date(ist);midnight.setHours(24,0,0,0);
  let s=Math.max(0,Math.floor((midnight-ist)/1000));const h=String(Math.floor(s/3600)).padStart(2,"0");const m=String(Math.floor(s%3600/60)).padStart(2,"0");const sec=String(s%60).padStart(2,"0");$("#countdown").textContent=h+":"+m+":"+sec;

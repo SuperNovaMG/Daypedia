@@ -147,6 +147,30 @@ function runSearch(){
  renderResults(found);
  $("#searchResults").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
+let calendarMonthDate = new Date();
+function renderCalendar(){
+ const monthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth(),1);
+ const year=monthDate.getFullYear(),month=monthDate.getMonth();
+ $("#calendarMonth").textContent=new Intl.DateTimeFormat(lang==="hi"?"en-IN":"en-US",{month:"long",year:"numeric"}).format(monthDate);
+ const firstDay=(monthDate.getDay()+6)%7;
+ const daysInMonth=new Date(year,month+1,0).getDate();
+ const cells=[];
+ for(let i=0;i<firstDay;i++)cells.push('<span class="calendar-empty" aria-hidden="true"></span>');
+ for(let day=1;day<=daysInMonth;day++){
+  const key=String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0");
+  const hasDays=daysFor(key).length>0;
+  const today=key===todayKey()&&year===istDate().getUTCFullYear();
+  cells.push('<button type="button" class="calendar-day'+(hasDays?' has-observances':'')+(today?' is-today':'')+'" data-calendar-date="'+year+'-'+String(month+1).padStart(2,"0")+'-'+String(day).padStart(2,"0")+'" aria-label="'+esc(new Intl.DateTimeFormat(lang==="hi"?"en-IN":"en-US",{month:"long",day:"numeric",year:"numeric"}).format(new Date(year,month,day)))+(hasDays?', '+daysFor(key).length+' observances':'')+'"><span>'+day+'</span>'+(hasDays?'<i aria-hidden="true"></i>':'')+'</button>');
+ }
+ $("#calendarDays").innerHTML=cells.join("");
+ $("#calendarDays").querySelectorAll("[data-calendar-date]").forEach(button=>button.addEventListener("click",()=>{
+  $("#dateInput").value=button.dataset.calendarDate;
+  runDateSearch();
+  $("#calendarDays").querySelectorAll(".is-selected").forEach(el=>el.classList.remove("is-selected"));
+  button.classList.add("is-selected");
+ }));
+ $("#calendarHint").textContent=lang==="hi"?"Date choose karo, us din ke observances dekho. Dot ka matlab listed days hain.":"Select a date to see its observances. Dots mark dates with listed days.";
+}
 function runDateSearch(){
  const input=$("#dateInput");
  const value=input.value;
@@ -226,13 +250,16 @@ function bindEvents(){
  $("#themeToggle").addEventListener("click",()=>{theme=theme==="dark"?"light":"dark";applyTheme();});
  $("#searchForm").addEventListener("submit",event=>{event.preventDefault();runSearch();});
  $("#dateGo").addEventListener("click",runDateSearch);
+  $("#calendarPrev").addEventListener("click",()=>{calendarMonthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()-1,1);renderCalendar();});
+  $("#calendarNext").addEventListener("click",()=>{calendarMonthDate=new Date(calendarMonthDate.getFullYear(),calendarMonthDate.getMonth()+1,1);renderCalendar();});
+  $("#calendarToday").addEventListener("click",()=>{const today=istDate();calendarMonthDate=new Date(today.getUTCFullYear(),today.getUTCMonth(),1);renderCalendar();$("#dateInput").value=today.getUTCFullYear()+"-"+String(today.getUTCMonth()+1).padStart(2,"0")+"-"+String(today.getUTCDate()).padStart(2,"0");runDateSearch();});
  $("#dateInput").addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();runDateSearch();}});
  $("#navShare").addEventListener("click",()=>{const first=daysFor(todayKey())[0];if(first)shareDay(first);else showToast(t("noData"));});
  $$(".quick-filter").forEach(btn=>btn.addEventListener("click",()=>applyQuickFilter(btn.dataset.filter)));
  $$(".category-tile").forEach(btn=>btn.addEventListener("click",()=>{const cat=btn.dataset.category;$("#searchInput").value=cat;renderResults(DAYS.filter(x=>x.cat===cat));$("#explore").scrollIntoView({behavior:"smooth"});}));
  $$(".mobile-nav a").forEach(link=>link.addEventListener("click",()=>{$$(".mobile-nav a").forEach(a=>a.classList.toggle("active",a===link));}));
 }
-function renderAll(){applyLanguage();renderFeatured();renderToday();renderUpcoming();tickCountdown();if($("#searchResults").children.length)bindDayCards($("#searchResults"));}
+function renderAll(){applyLanguage();renderFeatured();renderToday();renderUpcoming();renderCalendar();tickCountdown();if($("#searchResults").children.length)bindDayCards($("#searchResults"));}
 async function init(){
  applyTheme();applyLanguage();bindEvents();
  try{DAYS=await loadDays();renderAll();}catch(error){$("#featuredCard").innerHTML='<p class="empty">Day data load nahi hua. Please refresh karke try karo.</p>';}

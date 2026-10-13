@@ -86,6 +86,8 @@ function applyLanguage(){
   document.title=lang==="hi"?"Daypedia — Har din ek nayi kahani":"Daypedia — Every Day Has a Story";
 }
 function applyTheme(){document.documentElement.dataset.theme=theme;$("#themeToggle").textContent=theme==="dark"?"☾":"☀";}
+function daySlug(name){return String(name||"special-day").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"special-day";}
+function dayPageUrl(entry){return "/day/"+daySlug(entry.name)+"/";}
 function cardHTML(entry){
  const date=nextOccurrence(entry);
  const key=entry.d;
@@ -95,7 +97,7 @@ function closeDayModal(){const modal=$("#dayModalBackdrop");if(modal)modal.remov
 function openDayModal(entry){
  closeDayModal();
  const date=nextOccurrence(entry);
- const backdrop=document.createElement("div");backdrop.id="dayModalBackdrop";backdrop.className="day-modal-backdrop";backdrop.innerHTML='<article class="day-modal" role="dialog" aria-modal="true" aria-labelledby="dayModalTitle"><div class="day-modal-cover" style="background-image:linear-gradient(0deg,rgba(5,8,23,.3),rgba(5,8,23,.1)),url(&quot;'+dayImage(entry)+'&quot;);background-size:cover;background-position:center"><span>'+esc(entry.emoji||"✦")+'</span><button class="day-modal-close" type="button" aria-label="Close">×</button></div><div class="day-modal-content"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h2 id="dayModalTitle">'+esc(entry.name)+'</h2><p class="day-modal-date">▦ '+esc(niceDate(date))+'</p><section class="day-modal-section"><h3>'+esc(t("why"))+'</h3><p>'+esc(field(entry,"why"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("who"))+'</h3><p>'+esc(field(entry,"who"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("fact"))+'</h3><p>'+esc(field(entry,"fact"))+'</p></section><div class="day-modal-actions"><button class="primary-btn" id="modalShareDay">'+esc(t("share"))+' ↗</button><button class="secondary-btn" id="modalCopyDay">Copy details</button></div></div></article>';
+ const backdrop=document.createElement("div");backdrop.id="dayModalBackdrop";backdrop.className="day-modal-backdrop";backdrop.innerHTML='<article class="day-modal" role="dialog" aria-modal="true" aria-labelledby="dayModalTitle"><div class="day-modal-cover" style="background-image:linear-gradient(0deg,rgba(5,8,23,.3),rgba(5,8,23,.1)),url(&quot;'+dayImage(entry)+'&quot;);background-size:cover;background-position:center"><span>'+esc(entry.emoji||"✦")+'</span><button class="day-modal-close" type="button" aria-label="Close">×</button></div><div class="day-modal-content"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h2 id="dayModalTitle">'+esc(entry.name)+'</h2><p class="day-modal-date">▦ '+esc(niceDate(date))+'</p><section class="day-modal-section"><h3>'+esc(t("why"))+'</h3><p>'+esc(field(entry,"why"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("who"))+'</h3><p>'+esc(field(entry,"who"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("fact"))+'</h3><p>'+esc(field(entry,"fact"))+'</p></section><div class="day-modal-actions"><a class="primary-btn" href="'+dayPageUrl(entry)+'">Read full story →</a><button class="primary-btn" id="modalShareDay">'+esc(t("share"))+' ↗</button><button class="secondary-btn" id="modalCopyDay">Copy details</button></div></div></article>';
  document.body.appendChild(backdrop);
  backdrop.addEventListener("click",event=>{if(event.target===backdrop||event.target.closest(".day-modal-close"))closeDayModal();});
  backdrop.querySelector("#modalShareDay").addEventListener("click",()=>shareDay(entry));
@@ -173,7 +175,7 @@ function showToast(message){const toast=$("#toast");toast.textContent=message;to
 async function shareDay(entry){
  const displayName=entry["name_"+(lang==="hi"?"hi":"en")]||entry.name;
  const title=displayName+" — Daypedia";
- const shareText=displayName+"\n"+field(entry,"why")+"\n\n"+location.href;
+ const shareText=displayName+"\n"+field(entry,"why")+"\n\n"+new URL(dayPageUrl(entry),location.origin).href;
  const canvas=buildShareCanvas(entry);
  try{
   if(navigator.share&&navigator.canShare&&typeof File!=="undefined"){

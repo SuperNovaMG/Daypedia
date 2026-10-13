@@ -106,3 +106,12 @@ main{max-width:1600px;margin:0 auto}.hero-layout{display:grid;grid-template-colu
 [data-theme="light"] .date-search-row input[type="date"]::-webkit-calendar-picker-indicator{filter:none}
 @media(min-width:900px){.date-search-row{display:grid;grid-template-columns:minmax(280px,480px) auto;align-items:center}.explore-tools{min-height:140px}}
 @media(max-width:600px){.date-search-row{display:flex;flex-direction:column}.date-search-row input[type="date"],.date-search-row .primary-btn{width:100%;min-height:50px}}
+
+
+/* Instagram profile link */
+.instagram-link{display:inline-flex;align-items:center;gap:5px;color:#b78aff;font-size:.76rem;font-weight:700;white-space:nowrap}
+.instagram-link strong{color:var(--text)}
+.instagram-link:hover{color:#ec4899}
+[data-theme="light"] .instagram-link{color:#7136c9}
+[data-theme="light"] .instagram-link strong{color:#28213f}
+@media(max-width:600px){.instagram-link{font-size:.72rem}}

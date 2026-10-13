@@ -150,7 +150,7 @@ function runSearch({scroll=true}={}){
  const results=$("#searchResults");
  if(!results)return;
  if(!q){results.innerHTML="";return;}
- const normalize=value=>String(value??"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLocaleLowerCase();
+ const normalize=value=>String(value??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase();
  const found=DAYS.filter(entry=>{
    const searchable=[entry.name,entry.name_en,entry.name_hi,entry.cat,categoryLabel(entry.cat),entry.why_en,entry.why_hi,entry.who_en,entry.who_hi,entry.fact_en,entry.fact_hi].filter(Boolean).join(" ");
    return normalize(searchable).includes(normalize(q));
@@ -177,9 +177,9 @@ function renderCalendar(){
  $("#calendarDays").innerHTML=cells.join("");
  $("#calendarDays").querySelectorAll("[data-calendar-date]").forEach(button=>button.addEventListener("click",()=>{
   $("#dateInput").value=button.dataset.calendarDate;
-  runDateSearch();
   $("#calendarDays").querySelectorAll(".is-selected").forEach(el=>el.classList.remove("is-selected"));
   button.classList.add("is-selected");
+  runDateSearch();
  }));
  $("#calendarHint").textContent=lang==="hi"?"Date choose karo, us din ke observances dekho. Dot ka matlab listed days hain.":"Select a date to see its observances. Dots mark dates with listed days.";
 }
@@ -188,15 +188,16 @@ function runDateSearch(){
  const value=input.value;
  if(!value){showToast(t("dateRequired"));input.focus();return;}
  const parts=value.split("-");
- if(parts.length!==3||parts.some(part=>!/^\\d+$/.test(part))){showToast(t("dateRequired"));return;}
+ if(parts.length!==3||parts.some(part=>!/^[0-9]{1,4}$/.test(part))){showToast(t("dateRequired"));return;}
  const year=Number(parts[0]),month=Number(parts[1]),day=Number(parts[2]);
  const chosen=new Date(year,month-1,day);
  if(chosen.getFullYear()!==year||chosen.getMonth()!==month-1||chosen.getDate()!==day){showToast(t("dateRequired"));return;}
  const key=parts[1]+"-"+parts[2];
  const found=daysFor(key);
- renderResults(found);
- if(!found.length)$("#searchResults").innerHTML='<p class="empty">'+esc(t("noData"))+'</p>';
- $("#searchResults").scrollIntoView({behavior:"smooth",block:"nearest"});
+ const results=$("#searchResults");
+ results.innerHTML="";
+ if(found.length){renderResults(found);}else{results.innerHTML='<p class="empty">'+esc(t("noData"))+'</p>';}
+ results.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 function applyQuickFilter(filter){
  activeFilter=filter;

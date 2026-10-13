@@ -2,90 +2,120 @@
 <html lang="en" data-theme="dark" data-lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daypedia — Har din ka day, ab ek jagah</title>
-<meta name="description" content="Har din kaun sa international/national/fun day hai? Kyun bana, kisne banaya — Hinglish me, 30 second me.">
-<meta name="theme-color" content="#0a0a16">
-<!-- Social preview: link WhatsApp/Telegram/Instagram par share ho to ye card dikhega -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daypedia — Explore Every Day</title>
+<meta name="description" content="Discover festivals, awareness days, historic moments and fun observances. Har din ek nayi story, in Hindi and English.">
+<meta name="theme-color" content="#07091b">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Aaj Kaun Sa Day? — Roz ek naya day, roz ek naya funda">
-<meta property="og:description" content="Har din kaun sa international/national/fun day hai? Kyun bana, kisne banaya — Hinglish me, 30 second me.">
+<meta property="og:title" content="Daypedia — Every Day Has a Story">
+<meta property="og:description" content="Explore festivals, awareness days, historic moments and more.">
 <meta property="og:image" content="og-card.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Aaj Kaun Sa Day?">
-<meta name="twitter:description" content="Har din kaun sa day hai? Kyun bana, kisne banaya — Hinglish me, 30 second me.">
-<meta name="twitter:image" content="og-card.png">
-<link rel="stylesheet" href="styles.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
+<div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
 <header class="topbar">
-  <div class="logo">✨ <span data-i18n="brand">Aaj Kaun Sa Day?</span></div>
-  <div class="controls">
-    <button id="langToggle" class="pill-btn" title="Language">EN / हिं</button>
-    <button id="themeToggle" class="pill-btn" title="Theme">🌙</button>
+  <a class="brand" href="#home" aria-label="Daypedia home"><span class="brand-mark">▣</span><span>Daypedia</span></a>
+  <nav class="desktop-nav" aria-label="Main navigation">
+    <a class="nav-link active" href="#home" data-i18n="navHome">Home</a>
+    <a class="nav-link" href="#today" data-i18n="navToday">Today</a>
+    <a class="nav-link" href="#explore" data-i18n="navSearch">Search</a>
+    <a class="nav-link" href="#categories" data-i18n="navCategories">Categories</a>
+    <a class="nav-link" href="#upcoming" data-i18n="navUpcoming">Upcoming</a>
+  </nav>
+  <div class="top-actions">
+    <button id="langToggle" class="language-btn" aria-label="Switch language">HI <span>⌄</span></button>
+    <button id="themeToggle" class="icon-btn" aria-label="Toggle theme">☾</button>
+    <button id="navShare" class="share-top"><span data-i18n="share">Share</span> ↗</button>
   </div>
 </header>
-
-<main>
-  <!-- HERO -->
-  <section class="hero">
-    <h1 data-i18n="hero">Aaj Kaun Sa Day?</h1>
-    <p class="tagline" data-i18n="tagline">Roz ek naya day, roz ek naya funda 🎉</p>
-    <div class="date-badge">📅 <span id="todayDate">—</span></div>
+<main id="home">
+  <section class="hero-layout">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="eyebrow-dot"></span><span data-i18n="eyebrow">EXPLORE · DISCOVER · CELEBRATE</span></div>
+      <h1><span data-i18n="heroFirst">Every day</span><br><span class="gradient-text" data-i18n="heroSecond">has a story.</span></h1>
+      <p class="hero-tagline" data-i18n="tagline">Roz ek naya din, roz ek nayi kahani.</p>
+      <p class="hero-description" data-i18n="heroDescription">Discover festivals, awareness days, historic moments and little-known reasons to celebrate the world around you.</p>
+      <form id="searchForm" class="hero-search">
+        <span class="search-symbol">⌕</span>
+        <input id="searchInput" type="search" autocomplete="off" placeholder="Search a day, festival or topic..." aria-label="Search days">
+        <button type="submit" aria-label="Search">Search <span>→</span></button>
+      </form>
+      <div id="quickFilters" class="quick-filters">
+        <button class="quick-filter active" data-filter="popular">Popular</button>
+        <button class="quick-filter" data-filter="today">Today</button>
+        <button class="quick-filter" data-filter="tomorrow">Tomorrow</button>
+        <button class="quick-filter" data-filter="week">This week</button>
+        <button class="quick-filter" data-filter="festival">Festivals</button>
+        <button class="quick-filter" data-filter="awareness">Awareness</button>
+      </div>
+    </div>
+    <aside class="hero-side">
+      <article class="date-panel glass-panel">
+        <div class="panel-heading"><span class="panel-icon calendar-icon">▦</span><span data-i18n="todayDate">Today's date</span></div>
+        <p id="weekdayLabel" class="weekday-label">Today</p>
+        <h2 id="heroDate">—</h2>
+        <div class="date-meta"><span id="yearDay">Your day, your story</span><span id="daysLeft"></span></div>
+        <a href="#today" class="round-arrow" aria-label="Go to today's featured day">→</a>
+      </article>
+      <article id="upcoming" class="upcoming-panel glass-panel">
+        <div class="panel-heading"><span class="panel-icon clock-icon">◷</span><span data-i18n="upcoming">Upcoming highlights</span><a href="#explore" class="round-arrow small-arrow" aria-label="Explore dates">→</a></div>
+        <div id="upcomingList" class="upcoming-list"><p class="muted">Loading upcoming days…</p></div>
+      </article>
+    </aside>
   </section>
 
-  <!-- FEATURED -->
-  <section class="section">
-    <div class="section-label" data-i18n="featuredLabel">⭐ FEATURED DAY • TODAY</div>
-    <div id="featuredCard" class="featured-card"></div>
+  <section id="today" class="featured-section section-shell">
+    <div class="section-heading">
+      <div><div class="section-kicker"><span class="sparkle">✧</span> <span data-i18n="todayKicker">TODAY'S DISCOVERY</span></div><h2 data-i18n="featuredTitle">Featured day <span>· Today</span></h2></div>
+      <a class="text-link" href="#explore" data-i18n="viewDetails">Explore dates <span>↗</span></a>
+    </div>
+    <div id="featuredCard" class="featured-card"><div class="loading-skeleton"></div></div>
+    <div class="section-heading more-heading">
+      <div><div class="section-kicker" data-i18n="moreKicker">MORE TO CELEBRATE</div><h2 data-i18n="todayOthers">More days today</h2></div>
+      <span id="todayCount" class="count-pill">—</span>
+    </div>
+    <div id="todayGrid" class="day-grid"></div>
   </section>
 
-  <!-- TODAY'S OTHER DAYS -->
-  <section class="section">
-    <h2 data-i18n="todayOthers">Aaj Ke Aur Days</h2>
-    <div id="chips" class="chips"></div>
-    <div id="todayGrid" class="grid"></div>
-  </section>
-
-  <!-- YESTERDAY -->
-  <section class="section">
-    <h2 data-i18n="yesterday">🕰️ Kal Kya Tha</h2>
-    <div id="yesterdayList" class="list"></div>
-  </section>
-
-  <!-- TOMORROW -->
-  <section class="section">
-    <h2 data-i18n="tomorrow">⏳ Kal Kya Hoga</h2>
-    <div class="countdown-card">
-      <div class="countdown-time" id="countdown">--:--:--</div>
-      <p data-i18n="countdownText">Naye days unlock hone me bas itna time 👀</p>
+  <section id="categories" class="categories-section section-shell">
+    <div class="section-heading">
+      <div><div class="section-kicker"><span class="globe-icon">◎</span> <span data-i18n="browseKicker">FIND YOUR KIND OF DAY</span></div><h2 data-i18n="browseTitle">Browse by category</h2></div>
+      <a class="text-link" href="#explore" data-i18n="viewAll">View all <span>→</span></a>
+    </div>
+    <div class="category-grid">
+      <button class="category-tile cat-fest" data-category="festival"><span class="category-symbol">✳</span><span data-i18n="catFestival">Festivals & celebrations</span><span class="tile-arrow">↗</span></button>
+      <button class="category-tile cat-aware" data-category="awareness"><span class="category-symbol">♧</span><span data-i18n="catAwareness">Awareness days</span><span class="tile-arrow">↗</span></button>
+      <button class="category-tile cat-history" data-category="international"><span class="category-symbol">◷</span><span data-i18n="catHistory">Historic & world days</span><span class="tile-arrow">↗</span></button>
+      <button class="category-tile cat-national" data-category="national"><span class="category-symbol">⚑</span><span data-i18n="catNational">National days</span><span class="tile-arrow">↗</span></button>
+      <button class="category-tile cat-fun" data-category="fun"><span class="category-symbol">✺</span><span data-i18n="catFun">Fun & quirky days</span><span class="tile-arrow">↗</span></button>
+      <button class="category-tile cat-food" data-category="food"><span class="category-symbol">♨</span><span data-i18n="catFood">Food days</span><span class="tile-arrow">↗</span></button>
     </div>
   </section>
 
-  <!-- DATE SEARCH -->
-  <section class="section">
-    <h2 data-i18n="explore">🔍 Koi Aur Date Dekho</h2>
-    <div class="search-row">
-      <input type="date" id="dateInput" max="2027-12-31" min="2026-01-01">
-      <button id="dateGo" class="cta-btn" data-i18n="goBtn">Dekho →</button>
+  <section id="explore" class="explore-section section-shell">
+    <div class="section-heading">
+      <div><div class="section-kicker" data-i18n="exploreKicker">YOUR CALENDAR, YOUR CURIOSITY</div><h2 data-i18n="exploreTitle">Explore any date</h2></div>
     </div>
-    <div id="searchResults" class="grid"></div>
+    <div class="explore-tools glass-panel">
+      <label for="dateInput" data-i18n="pickDate">Pick a date</label>
+      <div class="date-search-row"><input type="date" id="dateInput" min="2020-01-01" max="2035-12-31"><button id="dateGo" class="primary-btn" data-i18n="goBtn">Explore date →</button></div>
+      <div id="searchResults" class="day-grid search-results"></div>
+    </div>
+  </section>
+
+  <section class="countdown-section section-shell">
+    <div class="countdown-copy"><div class="section-kicker" data-i18n="midnightKicker">THE NEXT CHAPTER</div><h2 data-i18n="midnightTitle">A new day is almost here.</h2><p data-i18n="midnightText">The countdown to tomorrow's discoveries starts now.</p></div>
+    <div class="countdown-card"><span class="countdown-time" id="countdown">--:--:--</span><span class="countdown-caption" data-i18n="countdownCaption">UNTIL MIDNIGHT · IST</span></div>
   </section>
 </main>
-
-<footer>
-  <p data-i18n="footer">Made with 💜 for curious minds • Data curated by hand, thoda pyaar ke saath</p>
-</footer>
-
-<nav class="bottomnav">
-  <a href="#top" class="active">🏠<span data-i18n="navHome">Home</span></a>
-  <a href="#" id="navExplore">🔍<span data-i18n="navSearch">Search</span></a>
-  <a href="#" id="navShare">📤<span data-i18n="navShare">Share</span></a>
-</nav>
-
+<footer class="footer"><a class="brand footer-brand" href="#home"><span class="brand-mark">▣</span><span>Daypedia</span></a><p data-i18n="footer">Made for curious minds. Every day has a story.</p><a href="#home" class="back-top">Back to top ↑</a></footer>
+<nav class="mobile-nav" aria-label="Mobile navigation"><a class="active" href="#home"><span>⌂</span><small data-i18n="navHome">Home</small></a><a href="#today"><span>✧</span><small data-i18n="navToday">Today</small></a><a href="#explore"><span>⌕</span><small data-i18n="navSearch">Search</small></a><a href="#categories"><span>▦</span><small data-i18n="navCategories">Categories</small></a></nav>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script src="app.js"></script>
 </body>
 </html>

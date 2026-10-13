@@ -210,3 +210,49 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:34px 20px 1
   .fc-name{font-size:1.3rem}
   .grid{grid-template-columns:1fr}
 }
+
+
+/* Responsive polish and keyboard accessibility */
+html { scroll-padding-top: 84px; }
+body { line-height: 1.55; }
+.hero { max-width: 960px; margin-inline: auto; }
+.hero h1 { line-height: 1.05; letter-spacing: -.045em; }
+.section { max-width: 1120px; }
+.section h2 { letter-spacing: -.025em; }
+.featured-card { padding: clamp(20px, 4vw, 36px); }
+.fc-name { line-height: 1.22; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
+.day-card { min-width: 0; box-shadow: 0 6px 24px rgba(0,0,0,.08); }
+.day-card h3 { line-height: 1.35; }
+.day-card.open { border-color: var(--accent); box-shadow: var(--glow); }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--accent3); outline-offset: 3px; }
+.cta-btn, .ghost-btn { min-height: 44px; }
+.pill-btn { min-height: 40px; }
+.search-row input { min-width: 0; min-height: 46px; }
+.bottomnav a { min-width: 72px; padding: 2px 10px; }
+footer { max-width: 900px; margin-inline: auto; line-height: 1.7; }
+[data-theme="light"] { color-scheme: light; }
+@media (min-width: 900px) {
+  .section { padding-top: 34px; }
+  .featured-card { border-radius: 26px; }
+  .day-card { padding: 22px; }
+}
+@media (max-width: 520px) {
+  .topbar { padding: 12px 14px; }
+  .logo { font-size: .98rem; }
+  .controls { gap: 6px; }
+  .pill-btn { padding: 8px 11px; }
+  .hero { padding: 40px 18px 10px; }
+  .tagline { font-size: .96rem; }
+  .section { padding: 24px 14px 6px; }
+  .section h2 { font-size: 1.28rem; }
+  .featured-card { padding: 20px; border-radius: 19px; }
+  .fc-name { font-size: 1.32rem; }
+  .search-row { align-items: stretch; }
+  .search-row input { width: 0; padding: 11px; font-size: .9rem; }
+  .search-row .cta-btn { padding: 10px 16px; white-space: nowrap; }
+  .bottomnav a { min-width: 0; flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

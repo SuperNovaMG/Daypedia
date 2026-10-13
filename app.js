@@ -105,7 +105,11 @@ function openDayModal(entry){
  const date=nextOccurrence(entry);
  const backdrop=document.createElement("div");backdrop.id="dayModalBackdrop";backdrop.className="day-modal-backdrop";backdrop.innerHTML='<article class="day-modal" role="dialog" aria-modal="true" aria-labelledby="dayModalTitle"><div class="day-modal-cover" style="background-image:linear-gradient(0deg,rgba(5,8,23,.3),rgba(5,8,23,.1)),url(&quot;'+dayImage(entry)+'&quot;);background-size:cover;background-position:center"><span>'+esc(entry.emoji||"✦")+'</span><button class="day-modal-close" type="button" aria-label="Close">×</button></div><div class="day-modal-content"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h2 id="dayModalTitle">'+esc(entry.name)+'</h2><p class="day-modal-date">▦ '+esc(niceDate(date))+'</p><section class="day-modal-section"><h3>'+esc(t("why"))+'</h3><p>'+esc(field(entry,"why"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("who"))+'</h3><p>'+esc(field(entry,"who"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("fact"))+'</h3><p>'+esc(field(entry,"fact"))+'</p></section><div class="day-modal-actions"><a class="primary-btn" href="'+dayPageUrl(entry)+'">Read full story →</a><button class="primary-btn" id="modalShareDay">'+esc(t("share"))+' ↗</button><button class="secondary-btn" id="modalCopyDay">Copy details</button></div></div></article>';
  document.body.appendChild(backdrop);
- backdrop.addEventListener("click",event=>{if(event.target===backdrop||event.target.closest(".day-modal-close"))closeDayModal();});
+ const previousFocus=document.activeElement;
+ backdrop.addEventListener("click",event=>{if(event.target===backdrop||event.target.closest(".day-modal-close")){closeDayModal();if(previousFocus&&typeof previousFocus.focus==="function")previousFocus.focus();}});
+ const closeButton=backdrop.querySelector(".day-modal-close");if(closeButton)closeButton.focus();
+ const modal=backdrop.querySelector(".day-modal");
+ modal.addEventListener("keydown",event=>{if(event.key!=="Tab")return;const focusable=[...modal.querySelectorAll("a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex='-1'])")];if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}});
  backdrop.querySelector("#modalShareDay").addEventListener("click",()=>shareDay(entry));
  backdrop.querySelector("#modalCopyDay").addEventListener("click",async()=>{const text=entry.name+"\n"+field(entry,"why")+"\n"+t("fact")+": "+field(entry,"fact")+"\n"+location.href;try{await navigator.clipboard.writeText(text);showToast("Details copied!");}catch(error){downloadShareCard(entry);} });
  const onKey=event=>{if(event.key==="Escape"){closeDayModal();document.removeEventListener("keydown",onKey);}};
@@ -172,13 +176,14 @@ function renderCalendar(){
   const key=String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0");
   const hasDays=daysFor(key).length>0;
   const today=key===todayKey()&&year===istDate().getUTCFullYear();
-  cells.push('<button type="button" class="calendar-day'+(hasDays?' has-observances':'')+(today?' is-today':'')+'" data-calendar-date="'+year+'-'+String(month+1).padStart(2,"0")+'-'+String(day).padStart(2,"0")+'" aria-label="'+esc(new Intl.DateTimeFormat(lang==="hi"?"en-IN":"en-US",{month:"long",day:"numeric",year:"numeric"}).format(new Date(year,month,day)))+(hasDays?', '+daysFor(key).length+' observances':'')+'"><span>'+day+'</span>'+(hasDays?'<i aria-hidden="true"></i>':'')+'</button>');
+  cells.push('<button type="button" aria-pressed="false" class="calendar-day'+(hasDays?' has-observances':'')+(today?' is-today':'')+'" data-calendar-date="'+year+'-'+String(month+1).padStart(2,"0")+'-'+String(day).padStart(2,"0")+'" aria-label="'+esc(new Intl.DateTimeFormat(lang==="hi"?"en-IN":"en-US",{month:"long",day:"numeric",year:"numeric"}).format(new Date(year,month,day)))+(hasDays?', '+daysFor(key).length+' observances':'')+'"><span>'+day+'</span>'+(hasDays?'<i aria-hidden="true"></i>':'')+'</button>');
  }
  $("#calendarDays").innerHTML=cells.join("");
  $("#calendarDays").querySelectorAll("[data-calendar-date]").forEach(button=>button.addEventListener("click",()=>{
   $("#dateInput").value=button.dataset.calendarDate;
-  $("#calendarDays").querySelectorAll(".is-selected").forEach(el=>el.classList.remove("is-selected"));
+  $("#calendarDays").querySelectorAll(".is-selected").forEach(el=>{el.classList.remove("is-selected");el.setAttribute("aria-pressed","false");});
   button.classList.add("is-selected");
+  button.setAttribute("aria-pressed","true");
   runDateSearch();
  }));
  $("#calendarHint").textContent=lang==="hi"?"Date choose karo, us din ke observances dekho. Dot ka matlab listed days hain.":"Select a date to see its observances. Dots mark dates with listed days.";

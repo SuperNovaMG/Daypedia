@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/day/:slug/",
+      "destination": "/day.html?slug=:slug"
+    },
+    {
+      "source": "/day/:slug",
+      "destination": "/day.html?slug=:slug"
+    }
+  ]
+}

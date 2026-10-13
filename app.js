@@ -145,10 +145,18 @@ function runSearch(){
  $("#searchResults").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 function runDateSearch(){
- const value=$("#dateInput").value;
- if(!value){showToast(t("dateRequired"));return;}
- const key=value.slice(5).replace("-","-");
- renderResults(daysFor(key));
+ const input=$("#dateInput");
+ const value=input.value;
+ if(!value){showToast(t("dateRequired"));input.focus();return;}
+ const parts=value.split("-");
+ if(parts.length!==3||parts.some(part=>!/^\\d+$/.test(part))){showToast(t("dateRequired"));return;}
+ const year=Number(parts[0]),month=Number(parts[1]),day=Number(parts[2]);
+ const chosen=new Date(year,month-1,day);
+ if(chosen.getFullYear()!==year||chosen.getMonth()!==month-1||chosen.getDate()!==day){showToast(t("dateRequired"));return;}
+ const key=parts[1]+"-"+parts[2];
+ const found=daysFor(key);
+ renderResults(found);
+ if(!found.length)$("#searchResults").innerHTML='<p class="empty">'+esc(t("noData"))+'</p>';
  $("#searchResults").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 function applyQuickFilter(filter){
@@ -161,21 +169,34 @@ function applyQuickFilter(filter){
  else{renderResults(DAYS.slice(0,9));renderToday();}
 }
 function showToast(message){const toast=$("#toast");toast.textContent=message;toast.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.classList.remove("show"),2400);}
-function shareDay(entry){
+async function shareDay(entry){
  const title=entry.name+" — Daypedia";
- const text=field(entry,"why")+"\n\n"+location.href;
- if(navigator.share){navigator.share({title,text,url:location.href}).catch(()=>{});return;}
- if(navigator.clipboard?.writeText){navigator.clipboard.writeText(title+"\n"+text).then(()=>showToast("Link copied!")).catch(()=>downloadShareCard(entry));}
- else downloadShareCard(entry);
+ const shareText=field(entry,"why")+"\n\n"+location.href;
+ const canvas=buildShareCanvas(entry);
+ try{
+  if(navigator.share&&navigator.canShare&&typeof File!=="undefined"){
+   const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/png"));
+   if(blob){
+    const file=new File([blob],"daypedia-"+entry.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png",{type:"image/png"});
+    if(navigator.canShare({files:[file]})){await navigator.share({title,text:shareText,files:[file]});showToast(t("shareDone"));return;}
+   }
+  }
+ }catch(error){if(error&&error.name==="AbortError")return;}
+ downloadShareCard(entry);
+ if(navigator.clipboard?.writeText){navigator.clipboard.writeText(location.href).then(()=>showToast("Share image saved · link copied!")).catch(()=>{});}
 }
-function downloadShareCard(entry){
+function buildShareCanvas(entry){
  const canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1350;
  const c=canvas.getContext("2d");const g=c.createLinearGradient(0,0,1080,1350);g.addColorStop(0,"#171039");g.addColorStop(1,"#050817");c.fillStyle=g;c.fillRect(0,0,1080,1350);
- c.strokeStyle="#8d5cff";c.lineWidth=3;c.strokeRect(38,38,1004,1274);c.textAlign="center";c.fillStyle="#d6b3ff";c.font="700 48px sans-serif";c.fillText("▣ Daypedia",540,145);
+ c.strokeStyle="#8d5cff";c.lineWidth=3;c.strokeRect(38,38,1004,1274);c.textAlign="center";c.fillStyle="#d6b3ff";c.font="700 48px sans-serif";c.fillText("✦ Daypedia",540,145);
  c.font="150px sans-serif";c.fillText(entry.emoji||"✦",540,390);c.fillStyle="#fff";c.font="800 62px sans-serif";wrapCanvas(c,entry.name,540,510,850,78);
  c.fillStyle="#da9bff";c.font="700 30px sans-serif";c.fillText(categoryLabel(entry.cat).toUpperCase(),540,730);
  c.fillStyle="#c5c9e7";c.font="34px sans-serif";wrapCanvas(c,field(entry,"why"),540,810,830,52);
  c.fillStyle="#6ee7ff";c.font="700 30px sans-serif";c.fillText(niceDate(istDate()),540,1170);c.fillStyle="#d6b3ff";c.font="700 28px sans-serif";c.fillText("Every day has a story.",540,1230);
+ return canvas;
+}
+function downloadShareCard(entry){
+ const canvas=buildShareCanvas(entry);
  const a=document.createElement("a");a.download="daypedia-"+entry.name.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".png";a.href=canvas.toDataURL("image/png");a.click();showToast(t("shareDone"));
 }
 function wrapCanvas(ctx,text,x,y,maxWidth,lineHeight){let line="",yy=y;for(const word of String(text).split(/\s+/)){const test=line+word+" ";if(ctx.measureText(test).width>maxWidth&&line){ctx.fillText(line,x,yy);line=word+" ";yy+=lineHeight;}else line=test;}ctx.fillText(line,x,yy);}

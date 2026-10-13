@@ -143,3 +143,16 @@ main{max-width:1600px;margin:0 auto}.hero-layout{display:grid;grid-template-colu
 [data-theme="light"] .calendar-browser{background:#fff}
 [data-theme="light"] .calendar-nav,[data-theme="light"] .calendar-day{background:#f5f2ff;color:#27213e}
 @media(max-width:520px){.calendar-browser{padding:12px}.calendar-grid{gap:4px}.calendar-day,.calendar-empty{min-height:39px}.calendar-day{border-radius:8px;font-size:.75rem}.calendar-toolbar{gap:6px}.calendar-today{padding:0 9px}}
+
+/* Phase 7: visible daily discovery, favourites and history */
+.retention-section{padding-top:34px}
+.retention-featured{align-items:center;max-width:100%}
+.retention-discovery-art{display:grid;place-items:center;min-height:220px;border-radius:15px;background:radial-gradient(circle at 35% 30%,#5637a7,#151b42 72%);font-size:5rem}
+.retention-grid{margin-top:4px}
+.retention-subheading{margin-top:32px}
+.card-save-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;border:1px solid #a77aff55;border-radius:999px;padding:8px 10px;background:#8b5cf61a;color:#d7b9ff;font-size:.68rem;font-weight:800;white-space:nowrap}
+.card-save-btn:hover,.card-save-btn.is-saved{border-color:#ec69d7;background:#a62d8e24;color:#ff9ce9}
+[data-theme="light"] .card-save-btn{background:#f5efff;color:#6937b5;border-color:#d9c5ff}
+[data-theme="light"] .card-save-btn.is-saved{background:#fff0fa;color:#b2258e;border-color:#f0b8df}
+.retention-featured .featured-content{width:100%}
+@media(max-width:520px){.retention-discovery-art{min-height:160px;height:160px}.retention-subheading{margin-top:26px}.card-save-btn{font-size:.61rem;padding:7px 8px}.retention-featured{grid-template-columns:1fr}}

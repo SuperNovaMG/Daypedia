@@ -110,6 +110,17 @@
     <div class="explore-tools glass-panel">
       <label for="dateInput" data-i18n="pickDate">Pick a date</label>
       <div class="date-search-row"><input type="date" id="dateInput" min="2020-01-01" max="2035-12-31"><button id="dateGo" class="primary-btn" data-i18n="goBtn">Explore date →</button></div>
+      <div class="calendar-browser" aria-label="Monthly observance calendar">
+        <div class="calendar-toolbar">
+          <button id="calendarPrev" class="calendar-nav" type="button" aria-label="Previous month">←</button>
+          <h3 id="calendarMonth" aria-live="polite">Month Year</h3>
+          <button id="calendarNext" class="calendar-nav" type="button" aria-label="Next month">→</button>
+          <button id="calendarToday" class="calendar-today" type="button">Today</button>
+        </div>
+        <div class="calendar-grid calendar-weekdays" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        <div id="calendarDays" class="calendar-grid" role="group" aria-label="Days in selected month"></div>
+        <p class="calendar-hint" id="calendarHint">Select a date to see its observances. Dots mark dates with listed days.</p>
+      </div>
       <div id="searchResults" class="day-grid search-results"></div>
     </div>
   </section>

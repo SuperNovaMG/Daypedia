@@ -86,8 +86,29 @@ function applyLanguage(){
 }
 function applyTheme(){document.documentElement.dataset.theme=theme;$("#themeToggle").textContent=theme==="dark"?"☾":"☀";localStorage.setItem("aksd-theme",theme);}
 function cardHTML(entry){
-  const date=nextOccurrence(entry);
-  return '<article class="day-card"><div class="day-card-media" style="background-image:linear-gradient(0deg,rgba(6,9,27,.35),rgba(6,9,27,.04)),url(&quot;'+dayImage(entry)+'&quot;);background-size:cover;background-position:center">'+esc(entry.emoji||"✦")+'</div><div class="day-card-body"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h3>'+esc(entry.name)+'</h3><p>'+esc(field(entry,"why"))+'</p><div class="day-card-meta"><span>'+esc(shortDate(date))+'</span><span class="card-arrow">↗</span></div></div></article>';
+ const date=nextOccurrence(entry);
+ const key=entry.d;
+ return '<article class="day-card" role="button" tabindex="0" data-day-key="'+esc(key)+'" aria-label="'+esc("Open "+entry.name)+'"><div class="day-card-media" style="background-image:linear-gradient(0deg,rgba(6,9,27,.58),rgba(6,9,27,.08)),url(&quot;'+dayImage(entry)+'&quot;);background-size:cover;background-position:center"><span class="card-emoji">'+esc(entry.emoji||"✦")+'</span></div><div class="day-card-body"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h3>'+esc(entry.name)+'</h3><p>'+esc(field(entry,"why"))+'</p><div class="day-card-meta"><span>'+esc(shortDate(date))+'</span><span class="card-arrow">↗</span></div><div class="day-card-actions"><button type="button" class="card-open-btn" data-open-day="'+esc(key)+'">'+esc(t("learnMore"))+'</button><button type="button" class="card-share-btn" data-share-day="'+esc(key)+'" aria-label="'+esc("Share "+entry.name)+'">↗ '+esc(t("share"))+'</button></div></div></article>';
+}
+function closeDayModal(){const modal=$("#dayModalBackdrop");if(modal)modal.remove();}
+function openDayModal(entry){
+ closeDayModal();
+ const date=nextOccurrence(entry);
+ const backdrop=document.createElement("div");backdrop.id="dayModalBackdrop";backdrop.className="day-modal-backdrop";backdrop.innerHTML='<article class="day-modal" role="dialog" aria-modal="true" aria-labelledby="dayModalTitle"><div class="day-modal-cover" style="background-image:linear-gradient(0deg,rgba(5,8,23,.3),rgba(5,8,23,.1)),url(&quot;'+dayImage(entry)+'&quot;);background-size:cover;background-position:center"><span>'+esc(entry.emoji||"✦")+'</span><button class="day-modal-close" type="button" aria-label="Close">×</button></div><div class="day-modal-content"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h2 id="dayModalTitle">'+esc(entry.name)+'</h2><p class="day-modal-date">▦ '+esc(niceDate(date))+'</p><section class="day-modal-section"><h3>'+esc(t("why"))+'</h3><p>'+esc(field(entry,"why"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("who"))+'</h3><p>'+esc(field(entry,"who"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("fact"))+'</h3><p>'+esc(field(entry,"fact"))+'</p></section><div class="day-modal-actions"><button class="primary-btn" id="modalShareDay">'+esc(t("share"))+' ↗</button><button class="secondary-btn" id="modalCopyDay">Copy details</button></div></div></article>';
+ document.body.appendChild(backdrop);
+ backdrop.addEventListener("click",event=>{if(event.target===backdrop||event.target.closest(".day-modal-close"))closeDayModal();});
+ backdrop.querySelector("#modalShareDay").addEventListener("click",()=>shareDay(entry));
+ backdrop.querySelector("#modalCopyDay").addEventListener("click",async()=>{const text=entry.name+"\n"+field(entry,"why")+"\n"+t("fact")+": "+field(entry,"fact")+"\n"+location.href;try{await navigator.clipboard.writeText(text);showToast("Details copied!");}catch(error){downloadShareCard(entry);} });
+ const onKey=event=>{if(event.key==="Escape"){closeDayModal();document.removeEventListener("keydown",onKey);}};
+ document.addEventListener("keydown",onKey);
+}
+function bindDayCards(root=document){
+ root.querySelectorAll("[data-day-key]").forEach(card=>{
+  const open=()=>{const entry=DAYS.find(x=>x.d===card.dataset.dayKey&&x.name===card.querySelector("h3")?.textContent);if(entry)openDayModal(entry);};
+  card.addEventListener("click",event=>{if(event.target.closest("[data-share-day]"))return;open();});
+  card.addEventListener("keydown",event=>{if((event.key==="Enter"||event.key===" ")&&!event.target.closest("button")){event.preventDefault();open();}});
+ });
+ root.querySelectorAll("[data-share-day]").forEach(button=>button.addEventListener("click",event=>{event.stopPropagation();const card=button.closest("[data-day-key]");const entry=DAYS.find(x=>x.d===card?.dataset.dayKey&&x.name===card.querySelector("h3")?.textContent);if(entry)shareDay(entry);}));
 }
 function renderFeatured(){
  const list=daysFor(todayKey());
@@ -103,6 +124,7 @@ function renderToday(){
  if(activeFilter==="popular")list=list.length?list:daysFor(todayKey());
  $("#todayCount").textContent=String(list.length);
  $("#todayGrid").innerHTML=list.length?list.slice(0,6).map(cardHTML).join(""):'<p class="empty">'+esc(t("noData"))+'</p>';
+ bindDayCards($("#todayGrid"));
  lastRendered=list;
 }
 function renderUpcoming(){
@@ -111,6 +133,7 @@ function renderUpcoming(){
 }
 function renderResults(list,container=$("#searchResults")){
  container.innerHTML=list.length?list.slice(0,12).map(cardHTML).join(""):'<p class="empty">'+esc(t("noSearch"))+'</p>';
+ bindDayCards(container);
 }
 function runSearch(){
  const q=$("#searchInput").value.trim().toLocaleLowerCase();
@@ -181,7 +204,7 @@ function bindEvents(){
  $$(".category-tile").forEach(btn=>btn.addEventListener("click",()=>{const cat=btn.dataset.category;$("#searchInput").value=cat;renderResults(DAYS.filter(x=>x.cat===cat));$("#explore").scrollIntoView({behavior:"smooth"});}));
  $$(".mobile-nav a").forEach(link=>link.addEventListener("click",()=>{$$(".mobile-nav a").forEach(a=>a.classList.toggle("active",a===link));}));
 }
-function renderAll(){applyLanguage();renderFeatured();renderToday();renderUpcoming();tickCountdown();}
+function renderAll(){applyLanguage();renderFeatured();renderToday();renderUpcoming();tickCountdown();if($("#searchResults").children.length)bindDayCards($("#searchResults"));}
 async function init(){
  applyTheme();applyLanguage();bindEvents();
  try{DAYS=await loadDays();renderAll();}catch(error){$("#featuredCard").innerHTML='<p class="empty">Day data load nahi hua. Please refresh karke try karo.</p>';}

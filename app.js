@@ -16,7 +16,7 @@ const COPY = {
     countdownCaption:"MIDNIGHT TAK · IST",footer:"Curious minds ke liye. Har din ki apni ek kahani hai.",share:"Share",
     learnMore:"Puri story →",noData:"Is date ke liye data abhi available nahi hai.",noSearch:"Is search mein koi day nahi mila.",
     tomorrow:"Kal",today:"Aaj",popular:"Popular",week:"Is hafte",festival:"Festival",awareness:"Awareness",why:"Kyun manaya jata hai",
-    fact:"Fun fact",who:"Kisne shuru kiya",dateRequired:"Pehle date choose karo.",shareDone:"Share card download ho gaya.",shareError:"Share karne mein problem hui."
+    fact:"Fun fact",who:"Kisne shuru kiya",dailyKicker:"HAR DIN EK NAYI KHOJ",dailyTitle:"Aaj ki discovery",dailyBadge:"Aaj ke liye",savedKicker:"TUMHARI PERSONAL COLLECTION",savedTitle:"Saved days",savedEmpty:"Jo days pasand hain unhe save karo, yahan milenge.",recentKicker:"JAHAN CHHODA WAHIN SE",recentTitle:"Recently viewed",recentEmpty:"Jo days tum open karoge, woh yahan dikhenge.",clearRecent:"History saaf karo",saveDay:"Save day",savedDay:"Saved",unsaveDay:"Remove saved day",saveToast:"Day saved ho gaya!",unsaveToast:"Saved days se hata diya.",clearToast:"Recently viewed history clear ho gayi.",dateRequired:"Pehle date choose karo.",shareDone:"Share card download ho gaya.",shareError:"Share karne mein problem hui."
   },
   en: {
     navHome:"Home",navToday:"Today",navSearch:"Search",navCategories:"Categories",navUpcoming:"Upcoming",
@@ -31,7 +31,7 @@ const COPY = {
     midnightText:"The countdown to tomorrow's discoveries starts now.",countdownCaption:"UNTIL MIDNIGHT · IST",
     footer:"Made for curious minds. Every day has a story.",share:"Share",learnMore:"Full story →",
     noData:"No days are listed for this date yet.",noSearch:"No days matched that search.",tomorrow:"Tomorrow",today:"Today",
-    popular:"Popular",week:"This week",festival:"Festivals",awareness:"Awareness",why:"Why it's celebrated",fact:"Fun fact",
+    popular:"Popular",week:"This week",festival:"Festivals",awareness:"Awareness",why:"Why it's celebrated",fact:"Fun fact",dailyKicker:"A FRESH FIND, EVERY DAY",dailyTitle:"Daily discovery",dailyBadge:"Picked for today",savedKicker:"YOUR PERSONAL COLLECTION",savedTitle:"Saved days",savedEmpty:"Save a day you love and it will appear here.",recentKicker:"PICK UP WHERE YOU LEFT OFF",recentTitle:"Recently viewed",recentEmpty:"Days you open will show up here.",clearRecent:"Clear history",saveDay:"Save day",savedDay:"Saved",unsaveDay:"Remove saved day",saveToast:"Day saved!",unsaveToast:"Removed from saved days.",clearToast:"Recently viewed history cleared.",
     dateRequired:"Please choose a date first.",shareDone:"Share card downloaded.",shareError:"Could not share this day."
   }
 };
@@ -40,6 +40,12 @@ let theme = "dark";
 let DAYS = [];
 let activeFilter = "popular";
 let lastRendered = [];
+const SAVED_KEY = "daypedia:saved-days:v1";
+const RECENT_KEY = "daypedia:recent-days:v1";
+const safeReadList = key => { try { const value = JSON.parse(localStorage.getItem(key) || "[]"); return Array.isArray(value) ? value : []; } catch { return []; } };
+let savedDays = safeReadList(SAVED_KEY);
+let recentDays = safeReadList(RECENT_KEY);
+const entryId = entry => String(entry?.name_en || entry?.name || entry?.d || "");
 const t = (key) => COPY[lang][key] || COPY.en[key] || key;
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const categoryLabel = (cat) => ({festival:lang==="hi"?"Tyohar":"Festival",awareness:lang==="hi"?"Jagrukta":"Awareness",international:lang==="hi"?"Duniya bhar ke din":"International",national:lang==="hi"?"Rashtriya din":"National",fun:lang==="hi"?"Mazedaar din":"Fun",food:lang==="hi"?"Food days":"Food"}[cat] || cat || "Day");
@@ -97,11 +103,12 @@ function dayPageUrl(entry){return "/day/"+daySlug(entry.name)+"/";}
 function cardHTML(entry){
  const date=nextOccurrence(entry);
  const key=entry.d;
- return '<article class="day-card" role="button" tabindex="0" data-day-key="'+esc(key)+'" aria-label="'+esc("Open "+entry.name)+'"><div class="day-card-media" style="background-image:linear-gradient(0deg,rgba(6,9,27,.58),rgba(6,9,27,.08)),url(&quot;'+dayImage(entry)+'&quot;);background-size:cover;background-position:center"><span class="card-emoji">'+esc(entry.emoji||"✦")+'</span></div><div class="day-card-body"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h3>'+esc(entry.name)+'</h3><p>'+esc(field(entry,"why"))+'</p><div class="day-card-meta"><span>'+esc(shortDate(date))+'</span><span class="card-arrow">↗</span></div><div class="day-card-actions"><a class="card-open-btn" href="'+dayPageUrl(entry)+'">'+esc(t("learnMore"))+'</a><button type="button" class="card-share-btn" data-share-day="'+esc(key)+'" aria-label="'+esc("Share "+entry.name)+'">↗ '+esc(t("share"))+'</button></div></div></article>';
+ const isSaved=savedDays.includes(entryId(entry));
+ return '<article class="day-card" role="button" tabindex="0" data-day-key="'+esc(key)+'" aria-label="'+esc("Open "+entry.name)+'"><div class="day-card-media" style="background-image:linear-gradient(0deg,rgba(6,9,27,.58),rgba(6,9,27,.08)),url(&quot;'+dayImage(entry)+'&quot;);background-size:cover;background-position:center"><span class="card-emoji">'+esc(entry.emoji||"✦")+'</span></div><div class="day-card-body"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h3>'+esc(entry.name)+'</h3><p>'+esc(field(entry,"why"))+'</p><div class="day-card-meta"><span>'+esc(shortDate(date))+'</span><span class="card-arrow">↗</span></div><div class="day-card-actions"><button type="button" class="card-save-btn'+(isSaved?' is-saved':'')+'" data-save-day="'+esc(entryId(entry))+'" aria-pressed="'+String(isSaved)+'" aria-label="'+esc(isSaved?t("unsaveDay"):t("saveDay"))+'">'+(isSaved?"♥":"♡")+' <span>'+esc(isSaved?t("savedDay"):t("saveDay"))+'</span></button><a class="card-open-btn" href="'+dayPageUrl(entry)+'">'+esc(t("learnMore"))+'</a><button type="button" class="card-share-btn" data-share-day="'+esc(key)+'" aria-label="'+esc("Share "+entry.name)+'">↗ '+esc(t("share"))+'</button></div></div></article>';
 }
 function closeDayModal(){const modal=$("#dayModalBackdrop");if(modal)modal.remove();}
 function openDayModal(entry){
- closeDayModal();
+ closeDayModal();recordRecent(entry);
  const date=nextOccurrence(entry);
  const backdrop=document.createElement("div");backdrop.id="dayModalBackdrop";backdrop.className="day-modal-backdrop";backdrop.innerHTML='<article class="day-modal" role="dialog" aria-modal="true" aria-labelledby="dayModalTitle"><div class="day-modal-cover" style="background-image:linear-gradient(0deg,rgba(5,8,23,.3),rgba(5,8,23,.1)),url(&quot;'+dayImage(entry)+'&quot;);background-size:cover;background-position:center"><span>'+esc(entry.emoji||"✦")+'</span><button class="day-modal-close" type="button" aria-label="Close">×</button></div><div class="day-modal-content"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h2 id="dayModalTitle">'+esc(entry.name)+'</h2><p class="day-modal-date">▦ '+esc(niceDate(date))+'</p><section class="day-modal-section"><h3>'+esc(t("why"))+'</h3><p>'+esc(field(entry,"why"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("who"))+'</h3><p>'+esc(field(entry,"who"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("fact"))+'</h3><p>'+esc(field(entry,"fact"))+'</p></section><div class="day-modal-actions"><a class="primary-btn" href="'+dayPageUrl(entry)+'">Read full story →</a><button class="primary-btn" id="modalShareDay">'+esc(t("share"))+' ↗</button><button class="secondary-btn" id="modalCopyDay">Copy details</button></div></div></article>';
  document.body.appendChild(backdrop);
@@ -122,6 +129,7 @@ function bindDayCards(root=document){
   card.addEventListener("keydown",event=>{if((event.key==="Enter"||event.key===" ")&&!event.target.closest("button")){event.preventDefault();open();}});
  });
  root.querySelectorAll("[data-share-day]").forEach(button=>button.addEventListener("click",event=>{event.stopPropagation();const card=button.closest("[data-day-key]");const entry=DAYS.find(x=>x.d===card?.dataset.dayKey&&x.name===card.querySelector("h3")?.textContent);if(entry)shareDay(entry);}));
+ root.querySelectorAll("[data-save-day]").forEach(button=>button.addEventListener("click",event=>{event.stopPropagation();const entry=DAYS.find(item=>entryId(item)===button.dataset.saveDay);if(entry)toggleSaved(entry);}));
 }
 function renderFeatured(){
  const list=daysFor(todayKey());
@@ -321,11 +329,50 @@ function bindEvents(){
   $("#calendarToday").addEventListener("click",()=>{const today=istDate();calendarMonthDate=new Date(today.getUTCFullYear(),today.getUTCMonth(),1);renderCalendar();$("#dateInput").value=today.getUTCFullYear()+"-"+String(today.getUTCMonth()+1).padStart(2,"0")+"-"+String(today.getUTCDate()).padStart(2,"0");runDateSearch();});
  $("#dateInput").addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();runDateSearch();}});
  $("#navShare").addEventListener("click",()=>{const first=daysFor(todayKey())[0];if(first)shareDay(first);else showToast(t("noData"));});
+ $("#clearRecent").addEventListener("click",()=>{recentDays=[];persistList(RECENT_KEY,recentDays);renderRetention();showToast(t("clearToast"));});
  $$(".quick-filter").forEach(btn=>btn.addEventListener("click",()=>applyQuickFilter(btn.dataset.filter)));
  $$(".category-tile").forEach(btn=>btn.addEventListener("click",()=>{const cat=btn.dataset.category;$("#searchInput").value=cat;renderResults(DAYS.filter(x=>x.cat===cat));$("#explore").scrollIntoView({behavior:"smooth"});}));
  $$(".mobile-nav a").forEach(link=>link.addEventListener("click",()=>{$$(".mobile-nav a").forEach(a=>a.classList.toggle("active",a===link));}));
 }
-function renderAll(){applyLanguage();renderFeatured();renderToday();renderUpcoming();renderCalendar();tickCountdown();if($("#searchResults").children.length)bindDayCards($("#searchResults"));}
+function persistList(key,list){try{localStorage.setItem(key,JSON.stringify(list));}catch(error){console.warn("Daypedia storage unavailable",error);}}
+function toggleSaved(entry){
+ const id=entryId(entry);
+ if(savedDays.includes(id)){savedDays=savedDays.filter(item=>item!==id);showToast(t("unsaveToast"));}
+ else{savedDays=[id,...savedDays.filter(item=>item!==id)].slice(0,100);showToast(t("saveToast"));}
+ persistList(SAVED_KEY,savedDays);renderRetention();renderToday();
+ if($("#searchResults").children.length){const query=normalizeSearch($("#searchInput").value);if(query)renderResults(DAYS.filter(item=>normalizeSearch([item.name,item.name_en,item.name_hi,item.cat,item.why_en,item.why_hi].join(" ")).includes(query)));}
+}
+function recordRecent(entry){
+ const id=entryId(entry);recentDays=[id,...recentDays.filter(item=>item!==id)].slice(0,8);persistList(RECENT_KEY,recentDays);renderRetention();
+}
+function retentionCard(entry){
+ const id=entryId(entry),isSaved=savedDays.includes(id);
+ return '<article class="day-card" role="button" tabindex="0" data-retention-key="'+esc(id)+'" aria-label="'+esc("Open "+entry.name)+'"><div class="day-card-media"><span class="card-emoji">'+esc(entry.emoji||"✦")+'</span></div><div class="day-card-body"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h3>'+esc(field(entry,"name")||entry.name)+'</h3><p>'+esc(field(entry,"why"))+'</p><div class="day-card-meta"><span>'+esc(shortDate(nextOccurrence(entry)))+'</span></div><div class="day-card-actions"><button type="button" class="card-save-btn'+(isSaved?' is-saved':'')+'" data-save-day="'+esc(id)+'" aria-pressed="'+String(isSaved)+'">'+(isSaved?"♥":"♡")+' <span>'+esc(isSaved?t("savedDay"):t("saveDay"))+'</span></button><a class="card-open-btn" href="'+dayPageUrl(entry)+'">'+esc(t("learnMore"))+'</a></div></div></article>';
+}
+function bindRetentionCards(root){
+ root.querySelectorAll("[data-retention-key]").forEach(card=>{
+  const open=()=>{const entry=DAYS.find(item=>entryId(item)===card.dataset.retentionKey);if(entry)openDayModal(entry);};
+  card.addEventListener("click",event=>{if(event.target.closest("button,a"))return;open();});
+  card.addEventListener("keydown",event=>{if((event.key==="Enter"||event.key===" ")&&!event.target.closest("button,a")){event.preventDefault();open();}});
+ });
+ root.querySelectorAll("[data-save-day]").forEach(button=>button.addEventListener("click",event=>{event.stopPropagation();const entry=DAYS.find(item=>entryId(item)===button.dataset.saveDay);if(entry)toggleSaved(entry);}));
+}
+function renderRetention(){
+ const savedEntries=savedDays.map(id=>DAYS.find(item=>entryId(item)===id)).filter(Boolean);
+ const recentEntries=recentDays.map(id=>DAYS.find(item=>entryId(item)===id)).filter(Boolean);
+ $("#savedCount").textContent=String(savedEntries.length);
+ $("#savedDaysGrid").innerHTML=savedEntries.length?savedEntries.map(retentionCard).join(""):'<p class="empty">'+esc(t("savedEmpty"))+'</p>';
+ $("#recentDaysGrid").innerHTML=recentEntries.length?recentEntries.map(retentionCard).join(""):'<p class="empty">'+esc(t("recentEmpty"))+'</p>';
+ bindRetentionCards($("#savedDaysGrid"));bindRetentionCards($("#recentDaysGrid"));
+ const daily=$("#dailyDiscoveryCard");
+ if(daily&&DAYS.length){
+  const today=istDate();const seed=Number(today.getUTCFullYear())*10000+(today.getUTCMonth()+1)*100+today.getUTCDate();
+  const entry=DAYS[seed%DAYS.length],id=entryId(entry),isSaved=savedDays.includes(id);
+  daily.innerHTML='<div class="featured-image retention-discovery-art"><span>'+esc(entry.emoji||"✦")+'</span></div><div class="featured-content"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h3>'+esc(field(entry,"name")||entry.name)+'</h3><p class="feature-why">'+esc(field(entry,"why"))+'</p><div class="day-card-actions"><button type="button" class="card-save-btn'+(isSaved?' is-saved':'')+'" data-save-day="'+esc(id)+'" aria-pressed="'+String(isSaved)+'">'+(isSaved?"♥":"♡")+' <span>'+esc(isSaved?t("savedDay"):t("saveDay"))+'</span></button><a class="card-open-btn" href="'+dayPageUrl(entry)+'">'+esc(t("learnMore"))+'</a></div></div>';
+  bindRetentionCards(daily);
+ }
+}
+function renderAll(){applyLanguage();renderFeatured();renderToday();renderUpcoming();renderCalendar();renderRetention();tickCountdown();if($("#searchResults").children.length)bindDayCards($("#searchResults"));}
 async function init(){
  applyTheme();applyLanguage();bindEvents();
  try{DAYS=await loadDays();renderAll();}catch(error){$("#featuredCard").innerHTML='<p class="empty">Day data load nahi hua. Please refresh karke try karo.</p>';}

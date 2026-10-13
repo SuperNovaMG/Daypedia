@@ -92,3 +92,17 @@ main{max-width:1600px;margin:0 auto}.hero-layout{display:grid;grid-template-colu
 [data-theme="light"] .day-modal-section{border-color:#e9e2f6}
 [data-theme="light"] .day-modal-actions .secondary-btn{background:#f5f1ff;color:#3b2a62}
 @media(max-width:520px){.day-card-body>p{font-size:.78rem;line-height:1.7}.day-card h3{font-size:.87rem}.card-share-btn,.card-open-btn{font-size:.67rem;padding:8px 9px}.day-modal-content{padding:19px}.day-modal-cover{height:150px}}
+
+
+/* Falcon brand mark + desktop date picker reliability */
+.brand-mark{display:grid;place-items:center;overflow:hidden}
+.brand-mark img{display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit}
+.date-search-row{align-items:stretch;max-width:760px;flex-wrap:wrap}
+.date-search-row input[type="date"]{min-height:54px;min-width:230px;color-scheme:dark;accent-color:#8b5cf6;cursor:pointer}
+.date-search-row input[type="date"]::-webkit-calendar-picker-indicator{opacity:1;cursor:pointer;filter:invert(82%) sepia(30%) saturate(1000%) hue-rotate(220deg)}
+.date-search-row input[type="date"]:focus-visible{outline:3px solid #a78bfa;outline-offset:2px;border-color:#a78bfa}
+.date-search-row .primary-btn{min-height:54px}
+[data-theme="light"] .date-search-row input[type="date"]{color-scheme:light;background:#fff;color:#22213e;border-color:#cfc4ef}
+[data-theme="light"] .date-search-row input[type="date"]::-webkit-calendar-picker-indicator{filter:none}
+@media(min-width:900px){.date-search-row{display:grid;grid-template-columns:minmax(280px,480px) auto;align-items:center}.explore-tools{min-height:140px}}
+@media(max-width:600px){.date-search-row{display:flex;flex-direction:column}.date-search-row input[type="date"],.date-search-row .primary-btn{width:100%;min-height:50px}}

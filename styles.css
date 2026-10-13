@@ -122,3 +122,24 @@ main{max-width:1600px;margin:0 auto}.hero-layout{display:grid;grid-template-colu
 .instagram-icon-btn:hover{color:var(--pink);border-color:var(--pink);transform:translateY(-1px);box-shadow:0 5px 18px #d946ef22}
 [data-theme="light"] .instagram-icon-btn{color:#7535e8;background:#fff}
 @media(max-width:520px){.instagram-icon-btn{width:37px;height:37px;flex-basis:37px;border-radius:12px}.instagram-icon-btn svg{width:18px;height:18px}}
+
+/* Phase 5: monthly observance calendar */
+.calendar-browser{margin-top:20px;padding:18px;border:1px solid var(--line);border-radius:18px;background:color-mix(in srgb,var(--card) 82%,transparent)}
+.calendar-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:15px}
+.calendar-toolbar h3{font-size:1rem;flex:1;text-align:center}
+.calendar-nav,.calendar-today{min-width:38px;min-height:38px;border:1px solid var(--line);border-radius:11px;background:var(--bg2);color:var(--text);font-weight:800;cursor:pointer}
+.calendar-today{padding:0 12px;font-size:.75rem;color:#d6b9ff}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.calendar-weekdays{margin-bottom:7px;text-align:center;color:var(--muted);font-size:.7rem;font-weight:800}
+.calendar-weekdays span{padding:7px 0}
+.calendar-day{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:48px;border:1px solid transparent;border-radius:11px;background:var(--bg2);color:var(--text);cursor:pointer;font:inherit;font-size:.82rem;transition:border-color .15s,background .15s}
+.calendar-day:hover,.calendar-day:focus-visible{outline:none;border-color:#9b76ff;background:#8b5cf626}
+.calendar-day.has-observances{border-color:#8b5cf65c}
+.calendar-day i{display:block;width:5px;height:5px;border-radius:50%;background:#ec66df}
+.calendar-day.is-today{box-shadow:inset 0 0 0 1px #22d3ee}
+.calendar-day.is-selected{background:#8b5cf64a;border-color:#c084fc}
+.calendar-empty{min-height:48px}
+.calendar-hint{margin-top:13px;color:var(--muted);font-size:.73rem;line-height:1.5}
+[data-theme="light"] .calendar-browser{background:#fff}
+[data-theme="light"] .calendar-nav,[data-theme="light"] .calendar-day{background:#f5f2ff;color:#27213e}
+@media(max-width:520px){.calendar-browser{padding:12px}.calendar-grid{gap:4px}.calendar-day,.calendar-empty{min-height:39px}.calendar-day{border-radius:8px;font-size:.75rem}.calendar-toolbar{gap:6px}.calendar-today{padding:0 9px}}

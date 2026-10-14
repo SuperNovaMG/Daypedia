@@ -335,7 +335,7 @@ function bindEvents(){
   $("#calendarToday").addEventListener("click",()=>{const today=istDate();calendarMonthDate=new Date(today.getUTCFullYear(),today.getUTCMonth(),1);renderCalendar();$("#dateInput").value=today.getUTCFullYear()+"-"+String(today.getUTCMonth()+1).padStart(2,"0")+"-"+String(today.getUTCDate()).padStart(2,"0");runDateSearch();});
  $("#dateInput").addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();runDateSearch();}});
  $("#navShare").addEventListener("click",()=>{const first=daysFor(todayKey())[0];if(first)shareDay(first);else showToast(t("noData"));});
- $("#clearRecent").addEventListener("click",()=>{recentDays=[];persistList(RECENT_KEY,recentDays);renderRetention();showToast(t("clearToast"));});
+ if($("#clearRecent"))$("#clearRecent").addEventListener("click",()=>{recentDays=[];persistList(RECENT_KEY,recentDays);renderRetention();showToast(t("clearToast"));});
  $$(".quick-filter").forEach(btn=>btn.addEventListener("click",()=>applyQuickFilter(btn.dataset.filter)));
  $$(".category-tile").forEach(btn=>btn.addEventListener("click",()=>{const cat=btn.dataset.category;$("#searchInput").value=cat;renderResults(DAYS.filter(x=>x.cat===cat));$("#explore").scrollIntoView({behavior:"smooth"});}));
  $$(".mobile-nav a").forEach(link=>link.addEventListener("click",()=>{$$(".mobile-nav a").forEach(a=>a.classList.toggle("active",a===link));}));
@@ -366,10 +366,10 @@ function bindRetentionCards(root){
 function renderRetention(){
  const savedEntries=savedDays.map(id=>DAYS.find(item=>entryId(item)===id)).filter(Boolean);
  const recentEntries=recentDays.map(id=>DAYS.find(item=>entryId(item)===id)).filter(Boolean);
- $("#savedCount").textContent=String(savedEntries.length);
- $("#savedDaysGrid").innerHTML=savedEntries.length?savedEntries.map(retentionCard).join(""):'<p class="empty">'+esc(t("savedEmpty"))+'</p>';
- $("#recentDaysGrid").innerHTML=recentEntries.length?recentEntries.map(retentionCard).join(""):'<p class="empty">'+esc(t("recentEmpty"))+'</p>';
- bindRetentionCards($("#savedDaysGrid"));bindRetentionCards($("#recentDaysGrid"));
+ if($("#savedCount"))$("#savedCount").textContent=String(savedEntries.length);
+ if($("#savedDaysGrid"))$("#savedDaysGrid").innerHTML=savedEntries.length?savedEntries.map(retentionCard).join(""):'<p class="empty">'+esc(t("savedEmpty"))+'</p>';
+ if($("#recentDaysGrid"))$("#recentDaysGrid").innerHTML=recentEntries.length?recentEntries.map(retentionCard).join(""):'<p class="empty">'+esc(t("recentEmpty"))+'</p>';
+ if($("#savedDaysGrid"))bindRetentionCards($("#savedDaysGrid"));if($("#recentDaysGrid"))bindRetentionCards($("#recentDaysGrid"));
  const daily=$("#dailyDiscoveryCard");
  if(daily&&DAYS.length){
   const today=istDate();const seed=Number(today.getUTCFullYear())*10000+(today.getUTCMonth()+1)*100+today.getUTCDate();

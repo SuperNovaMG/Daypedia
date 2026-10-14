@@ -32,7 +32,7 @@
     <a class="nav-link" href="#today" data-i18n="navToday">Today</a>
     <a class="nav-link" href="#explore" data-i18n="navSearch">Search</a>
     <a class="nav-link" href="#categories" data-i18n="navCategories">Categories</a>
-    <a class="nav-link" href="#upcoming" data-i18n="navUpcoming">Upcoming</a>
+    <a class="nav-link" href="#upcoming" data-i18n="navUpcoming">Upcoming</a><a class="nav-link" href="#myDays" data-i18n="navMore">More</a>
   </nav>
   <div class="top-actions">
     <a class="instagram-icon-btn" href="https://www.instagram.com/days_pedia/" target="_blank" rel="noopener noreferrer" aria-label="Follow Daypedia on Instagram" title="Instagram @days_pedia"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1"></circle></svg></a>
@@ -95,12 +95,6 @@
     <div class="section-heading"><div><div class="section-kicker">✦ <span data-i18n="dailyKicker">A FRESH FIND, EVERY DAY</span></div><h2 data-i18n="dailyTitle">Daily discovery</h2></div><span class="count-pill" data-i18n="dailyBadge">Picked for today</span></div>
     <div id="dailyDiscoveryCard" class="featured-card retention-featured"></div>
   </section>
-  <section id="myDays" class="retention-section section-shell">
-    <div class="section-heading"><div><div class="section-kicker">♡ <span data-i18n="savedKicker">YOUR PERSONAL COLLECTION</span></div><h2 data-i18n="savedTitle">Saved days</h2></div><span id="savedCount" class="count-pill">0</span></div>
-    <div id="savedDaysGrid" class="day-grid retention-grid"><p class="empty" data-i18n="savedEmpty">Save a day you love and it will appear here.</p></div>
-    <div class="section-heading retention-subheading"><div><div class="section-kicker">◷ <span data-i18n="recentKicker">PICK UP WHERE YOU LEFT OFF</span></div><h2 data-i18n="recentTitle">Recently viewed</h2></div><button id="clearRecent" class="text-link" type="button" data-i18n="clearRecent">Clear history</button></div>
-    <div id="recentDaysGrid" class="day-grid retention-grid"><p class="empty" data-i18n="recentEmpty">Days you open will show up here.</p></div>
-  </section>
   <section id="categories" class="categories-section section-shell">
     <div class="section-heading">
       <div><div class="section-kicker"><span class="globe-icon">◎</span> <span data-i18n="browseKicker">FIND YOUR KIND OF DAY</span></div><h2 data-i18n="browseTitle">Browse by category</h2></div>
@@ -142,9 +136,15 @@
     <div class="countdown-copy"><div class="section-kicker" data-i18n="midnightKicker">THE NEXT CHAPTER</div><h2 data-i18n="midnightTitle">A new day is almost here.</h2><p data-i18n="midnightText">The countdown to tomorrow's discoveries starts now.</p></div>
     <div class="countdown-card"><span class="countdown-time" id="countdown">--:--:--</span><span class="countdown-caption" data-i18n="countdownCaption">UNTIL MIDNIGHT · IST</span></div>
   </section>
+  <section id="myDays" class="retention-section section-shell">
+    <div class="section-heading"><div><div class="section-kicker">♡ <span data-i18n="savedKicker">YOUR PERSONAL COLLECTION</span></div><h2 data-i18n="savedTitle">Saved days</h2></div><span id="savedCount" class="count-pill">0</span></div>
+    <div id="savedDaysGrid" class="day-grid retention-grid"><p class="empty" data-i18n="savedEmpty">Save a day you love and it will appear here.</p></div>
+    <div class="section-heading retention-subheading"><div><div class="section-kicker">◷ <span data-i18n="recentKicker">PICK UP WHERE YOU LEFT OFF</span></div><h2 data-i18n="recentTitle">Recently viewed</h2></div><button id="clearRecent" class="text-link" type="button" data-i18n="clearRecent">Clear history</button></div>
+    <div id="recentDaysGrid" class="day-grid retention-grid"><p class="empty" data-i18n="recentEmpty">Days you open will show up here.</p></div>
+  </section>
 </main>
 <footer class="footer"><a class="brand footer-brand" href="#home"><span class="brand-mark"><img src="assets/falcon-mark.svg" alt="" width="25" height="25"></span><span>Daypedia</span></a><p data-i18n="footer">Made for curious minds. Every day has a story.</p><a href="#home" class="back-top">Back to top ↑</a></footer>
-<nav class="mobile-nav" aria-label="Mobile navigation"><a class="active" href="#home"><span>⌂</span><small data-i18n="navHome">Home</small></a><a href="#today"><span>✧</span><small data-i18n="navToday">Today</small></a><a href="#explore"><span>⌕</span><small data-i18n="navSearch">Search</small></a><a href="#categories"><span>▦</span><small data-i18n="navCategories">Categories</small></a></nav>
+<nav class="mobile-nav" aria-label="Mobile navigation"><a class="active" href="#home"><span>⌂</span><small data-i18n="navHome">Home</small></a><a href="#today"><span>✧</span><small data-i18n="navToday">Today</small></a><a href="#explore"><span>⌕</span><small data-i18n="navSearch">Search</small></a><a href="#categories"><span>▦</span><small data-i18n="navCategories">Categories</small></a><a href="#myDays"><span>⋯</span><small data-i18n="navMore">More</small></a></nav>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script src="app.js"></script>
 </body>

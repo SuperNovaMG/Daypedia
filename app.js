@@ -3,7 +3,7 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 const COPY = {
   hi: {
-    navHome:"Home",navToday:"Aaj",navSearch:"Search",navCategories:"Categories",navUpcoming:"Aane wale",
+    navHome:"Home",navToday:"Aaj",navSearch:"Search",navCategories:"Categories",navUpcoming:"Aane wale",navMore:"More",
     eyebrow:"EXPLORE · DISCOVER · CELEBRATE",heroFirst:"Har din",heroSecond:"ek kahani.",tagline:"Roz ek naya din, roz ek nayi kahani.",
     heroDescription:"Festivals, awareness days, history aur duniya bhar ke special days ko discover karo.",
     searchPlaceholder:"Koi day, festival ya topic search karo...",todayDate:"Aaj ki date",upcoming:"Aane wale highlights",
@@ -19,7 +19,7 @@ const COPY = {
     fact:"Fun fact",who:"Kisne shuru kiya",dailyKicker:"HAR DIN EK NAYI KHOJ",dailyTitle:"Aaj ki discovery",dailyBadge:"Aaj ke liye",savedKicker:"TUMHARI PERSONAL COLLECTION",savedTitle:"Saved days",savedEmpty:"Jo days pasand hain unhe save karo, yahan milenge.",recentKicker:"JAHAN CHHODA WAHIN SE",recentTitle:"Recently viewed",recentEmpty:"Jo days tum open karoge, woh yahan dikhenge.",clearRecent:"History saaf karo",saveDay:"Save day",savedDay:"Saved",unsaveDay:"Remove saved day",saveToast:"Day saved ho gaya!",unsaveToast:"Saved days se hata diya.",clearToast:"Recently viewed history clear ho gayi.",dateRequired:"Pehle date choose karo.",shareDone:"Share card download ho gaya.",shareError:"Share karne mein problem hui."
   },
   en: {
-    navHome:"Home",navToday:"Today",navSearch:"Search",navCategories:"Categories",navUpcoming:"Upcoming",
+    navHome:"Home",navToday:"Today",navSearch:"Search",navCategories:"Categories",navUpcoming:"Upcoming",navMore:"More",
     eyebrow:"EXPLORE · DISCOVER · CELEBRATE",heroFirst:"Every day",heroSecond:"has a story.",tagline:"A new day, a new story, every day.",
     heroDescription:"Discover festivals, awareness days, historic moments and little-known reasons to celebrate the world around you.",
     searchPlaceholder:"Search a day, festival or topic...",todayDate:"Today's date",upcoming:"Upcoming highlights",
@@ -110,16 +110,22 @@ function closeDayModal(){const modal=$("#dayModalBackdrop");if(modal)modal.remov
 function openDayModal(entry){
  closeDayModal();recordRecent(entry);
  const date=nextOccurrence(entry);
- const backdrop=document.createElement("div");backdrop.id="dayModalBackdrop";backdrop.className="day-modal-backdrop";backdrop.innerHTML='<article class="day-modal" role="dialog" aria-modal="true" aria-labelledby="dayModalTitle"><div class="day-modal-cover" style="background-image:linear-gradient(0deg,rgba(5,8,23,.3),rgba(5,8,23,.1)),url(&quot;'+dayImage(entry)+'&quot;);background-size:cover;background-position:center"><span>'+esc(entry.emoji||"✦")+'</span><button class="day-modal-close" type="button" aria-label="Close">×</button></div><div class="day-modal-content"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h2 id="dayModalTitle">'+esc(entry.name)+'</h2><p class="day-modal-date">▦ '+esc(niceDate(date))+'</p><section class="day-modal-section"><h3>'+esc(t("why"))+'</h3><p>'+esc(field(entry,"why"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("who"))+'</h3><p>'+esc(field(entry,"who"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("fact"))+'</h3><p>'+esc(field(entry,"fact"))+'</p></section><div class="day-modal-actions"><a class="primary-btn" href="'+dayPageUrl(entry)+'">Read full story →</a><button class="primary-btn" id="modalShareDay">'+esc(t("share"))+' ↗</button><button class="secondary-btn" id="modalCopyDay">Copy details</button></div></div></article>';
+ const backdrop=document.createElement("div");backdrop.id="dayModalBackdrop";backdrop.className="day-modal-backdrop";backdrop.innerHTML='<article class="day-modal" role="dialog" aria-modal="true" aria-labelledby="dayModalTitle"><div class="day-modal-cover" style="background-image:linear-gradient(0deg,rgba(5,8,23,.3),rgba(5,8,23,.1)),url(&quot;'+dayImage(entry)+'&quot;);background-size:cover;background-position:center"><span>'+esc(entry.emoji||"✦")+'</span><button class="day-modal-close" type="button" aria-label="Close">×</button></div><div class="day-modal-content"><div class="modal-navigation"><button type="button" class="modal-back-btn" id="modalBackToPage">← Back to page</button><button type="button" class="modal-save-btn" id="modalSaveDay">♡ Save day</button></div><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h2 id="dayModalTitle">'+esc(entry.name)+'</h2><p class="day-modal-date">▦ '+esc(niceDate(date))+'</p><section class="day-modal-section"><h3>'+esc(t("why"))+'</h3><p>'+esc(field(entry,"why"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("who"))+'</h3><p>'+esc(field(entry,"who"))+'</p></section><section class="day-modal-section"><h3>'+esc(t("fact"))+'</h3><p>'+esc(field(entry,"fact"))+'</p></section><div class="day-modal-actions"><a class="primary-btn" href="'+dayPageUrl(entry)+'">Read full story →</a><button class="primary-btn" id="modalShareDay">'+esc(t("share"))+' ↗</button><button class="secondary-btn" id="modalCopyDay">Copy details</button></div></div></article>';
  document.body.appendChild(backdrop);
  const previousFocus=document.activeElement;
- backdrop.addEventListener("click",event=>{if(event.target===backdrop||event.target.closest(".day-modal-close")){closeDayModal();if(previousFocus&&typeof previousFocus.focus==="function")previousFocus.focus();}});
+ history.pushState({daypediaModal:true},"","#day-"+encodeURIComponent(entryId(entry).toLowerCase().replace(/[^a-z0-9]+/g,"-")));
+ let modalClosed=false;
+ const finishModal=()=>{if(modalClosed)return;modalClosed=true;closeDayModal();window.removeEventListener("popstate",onPop);};
+ const onPop=()=>finishModal();window.addEventListener("popstate",onPop);
+ backdrop.addEventListener("click",event=>{if(event.target===backdrop||event.target.closest(".day-modal-close")){finishModal();if(history.state?.daypediaModal)history.back();if(previousFocus&&typeof previousFocus.focus==="function")previousFocus.focus();}});
  const closeButton=backdrop.querySelector(".day-modal-close");if(closeButton)closeButton.focus();
  const modal=backdrop.querySelector(".day-modal");
  modal.addEventListener("keydown",event=>{if(event.key!=="Tab")return;const focusable=[...modal.querySelectorAll("a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex='-1'])")];if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}});
+ backdrop.querySelector("#modalBackToPage").addEventListener("click",()=>{finishModal();if(history.state?.daypediaModal)history.back();if(previousFocus&&typeof previousFocus.focus==="function")previousFocus.focus();});
+ backdrop.querySelector("#modalSaveDay").addEventListener("click",()=>{toggleSaved(entry);const button=backdrop.querySelector("#modalSaveDay");const saved=savedDays.includes(entryId(entry));button.textContent=saved?"♥ Saved":"♡ Save day";button.setAttribute("aria-pressed",String(saved));});
  backdrop.querySelector("#modalShareDay").addEventListener("click",()=>shareDay(entry));
  backdrop.querySelector("#modalCopyDay").addEventListener("click",async()=>{const text=entry.name+"\n"+field(entry,"why")+"\n"+t("fact")+": "+field(entry,"fact")+"\n"+location.href;try{await navigator.clipboard.writeText(text);showToast("Details copied!");}catch(error){downloadShareCard(entry);} });
- const onKey=event=>{if(event.key==="Escape"){closeDayModal();document.removeEventListener("keydown",onKey);}};
+ const onKey=event=>{if(event.key==="Escape"){finishModal();if(history.state?.daypediaModal)history.back();document.removeEventListener("keydown",onKey);}};
  document.addEventListener("keydown",onKey);
 }
 function bindDayCards(root=document){

@@ -136,6 +136,12 @@ function bindDayCards(root=document){
  });
  root.querySelectorAll("[data-share-day]").forEach(button=>button.addEventListener("click",event=>{event.stopPropagation();const card=button.closest("[data-day-key]");const entry=DAYS.find(x=>x.d===card?.dataset.dayKey&&x.name===card.querySelector("h3")?.textContent);if(entry)shareDay(entry);}));
  root.querySelectorAll("[data-save-day]").forEach(button=>button.addEventListener("click",event=>{event.stopPropagation();const entry=DAYS.find(item=>entryId(item)===button.dataset.saveDay);if(entry)toggleSaved(entry);}));
+ root.querySelectorAll("[data-complete-discovery]").forEach(button=>button.addEventListener("click",event=>{
+  event.stopPropagation();const key="daypedia:completed-days:v1";let completed=[];try{const parsed=JSON.parse(localStorage.getItem(key)||"[]");if(Array.isArray(parsed))completed=parsed;}catch{}
+  const now=istDate();const today=now.getUTCFullYear()+"-"+String(now.getUTCMonth()+1).padStart(2,"0")+"-"+String(now.getUTCDate()).padStart(2,"0");
+  if(completed.includes(today)){button.disabled=true;button.textContent="✓ Completed today";return;}
+  completed=[...new Set([...completed,today])].sort();persistList(key,completed);button.disabled=true;button.textContent="✓ Completed today";showToast("Daily Discovery completed! Your streak progress is saved.");
+ }));
 }
 function renderFeatured(){
  const list=daysFor(todayKey());
@@ -375,6 +381,7 @@ function renderRetention(){
   const today=istDate();const seed=Number(today.getUTCFullYear())*10000+(today.getUTCMonth()+1)*100+today.getUTCDate();
   const entry=DAYS[seed%DAYS.length],id=entryId(entry),isSaved=savedDays.includes(id);
   daily.innerHTML='<div class="featured-image retention-discovery-art"><span>'+esc(entry.emoji||"✦")+'</span></div><div class="featured-content"><span class="category-badge">'+esc(categoryLabel(entry.cat))+'</span><h3>'+esc(field(entry,"name")||entry.name)+'</h3><p class="feature-why">'+esc(field(entry,"why"))+'</p><div class="day-card-actions"><button type="button" class="card-save-btn'+(isSaved?' is-saved':'')+'" data-save-day="'+esc(id)+'" aria-pressed="'+String(isSaved)+'">'+(isSaved?"♥":"♡")+' <span>'+esc(isSaved?t("savedDay"):t("saveDay"))+'</span></button><a class="card-open-btn" href="'+dayPageUrl(entry)+'">'+esc(t("learnMore"))+'</a></div></div>';
+   const doneKey="daypedia:completed-days:v1";let doneDates=[];try{const parsed=JSON.parse(localStorage.getItem(doneKey)||"[]");if(Array.isArray(parsed))doneDates=parsed;}catch{}const todayDate=istDate();const todayKey=todayDate.getUTCFullYear()+"-"+String(todayDate.getUTCMonth()+1).padStart(2,"0")+"-"+String(todayDate.getUTCDate()).padStart(2,"0");daily.querySelector(".day-card-actions").insertAdjacentHTML("beforeend",'<button type="button" class="card-open-btn" data-complete-discovery'+(doneDates.includes(todayKey)?" disabled":"")+'>'+(doneDates.includes(todayKey)?"✓ Completed today":"✓ I explored today")+"</button>");
   bindRetentionCards(daily);
  }
 }

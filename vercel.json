@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/more/",
+      "destination": "/more.html"
+    },
+    {
+      "source": "/more",
+      "destination": "/more.html"
+    },
+    {
       "source": "/day/:slug/",
       "destination": "/day.html?slug=:slug"
     },

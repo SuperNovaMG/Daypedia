@@ -156,3 +156,10 @@ main{max-width:1600px;margin:0 auto}.hero-layout{display:grid;grid-template-colu
 [data-theme="light"] .card-save-btn.is-saved{background:#fff0fa;color:#b2258e;border-color:#f0b8df}
 .retention-featured .featured-content{width:100%}
 @media(max-width:520px){.retention-discovery-art{min-height:160px;height:160px}.retention-subheading{margin-top:26px}.card-save-btn{font-size:.61rem;padding:7px 8px}.retention-featured{grid-template-columns:1fr}}
+
+.day-card-actions{justify-content:flex-start;flex-wrap:nowrap;gap:7px}
+.card-save-btn,.card-open-btn,.card-share-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:36px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:transparent;font-size:.72rem;font-weight:750;line-height:1.2;white-space:nowrap}
+.card-save-btn{flex:0 0 auto;color:#d8b9ff;border-color:#9e72ed66;background:#8b5cf61a}.card-save-btn.is-saved{color:#ff9ce9;border-color:#ec69d7;background:#a62d8e24}.card-open-btn{flex:1 1 auto;min-width:0;text-align:center;background:var(--bg2)}.card-share-btn{flex:0 0 auto;color:#bd8bff}
+@media(max-width:520px){.day-card-actions{gap:6px}.card-save-btn,.card-open-btn,.card-share-btn{min-height:34px;padding:7px 9px;font-size:.66rem}.card-share-btn{display:none}.day-card-actions .card-open-btn{flex:1}}
+.day-modal-backdrop{padding:12px}.day-modal{width:min(560px,100%);max-height:min(76vh,720px);border-radius:20px}.day-modal-cover{height:125px;font-size:3.7rem}.day-modal-content{padding:17px}.day-modal-section{padding:10px 0}.day-modal-section p{font-size:.84rem;line-height:1.65}.modal-navigation{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.modal-back-btn,.modal-save-btn{border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--bg2);color:var(--text);font-size:.76rem;font-weight:750}.modal-save-btn{border-color:#9e72ed66;color:#d8b9ff;background:#8b5cf61a}
+@media(max-width:520px){.day-modal-backdrop{padding:10px}.day-modal{width:min(100%,480px);max-height:70dvh;border-radius:18px}.day-modal-cover{height:100px;font-size:3rem}.day-modal-content{padding:14px}}
